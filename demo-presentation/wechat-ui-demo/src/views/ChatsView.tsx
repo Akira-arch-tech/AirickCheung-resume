@@ -66,6 +66,7 @@ export function ChatsView({ threads, onOpen, showToast }: ChatsViewProps) {
               className={`wx-row${t.pinned ? " wx-pinned" : ""}`}
               onClick={() => onOpen(t.id)}
               role="listitem"
+              aria-label={`打开与 ${t.name} 的会话`}
             >
               <div className="wx-avatar" aria-hidden>
                 {t.avatar}

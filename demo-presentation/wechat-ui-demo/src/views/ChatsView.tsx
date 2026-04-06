@@ -1,16 +1,26 @@
 import { useMemo, useState } from "react";
 import { ActionSheet } from "../components/ActionSheet";
+import { SwipeChatRow } from "../components/SwipeChatRow";
 import type { ChatThread } from "../types";
 
 interface ChatsViewProps {
   threads: ChatThread[];
   onOpen: (id: string) => void;
   showToast: (message: string) => void;
+  onMarkUnread: (id: string) => void;
+  onDeleteThread: (id: string) => void;
 }
 
-export function ChatsView({ threads, onOpen, showToast }: ChatsViewProps) {
+export function ChatsView({
+  threads,
+  onOpen,
+  showToast,
+  onMarkUnread,
+  onDeleteThread,
+}: ChatsViewProps) {
   const [query, setQuery] = useState("");
   const [addOpen, setAddOpen] = useState(false);
+  const [openSwipeId, setOpenSwipeId] = useState<string | null>(null);
 
   const sorted = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -54,36 +64,25 @@ export function ChatsView({ threads, onOpen, showToast }: ChatsViewProps) {
             </button>
           ) : null}
         </label>
+        <p className="wx-swipe-hint">向左滑动会话可「标为未读 / 删除」（PRD 4.2）</p>
       </div>
-      <div className="wx-list" role="list">
+      <div className="wx-list wx-list-swipe" role="list">
         {sorted.length === 0 ? (
           <div className="wx-empty-hint">无匹配会话，试试其他关键词</div>
         ) : (
           sorted.map((t) => (
-            <button
+            <SwipeChatRow
               key={t.id}
-              type="button"
-              className={`wx-row${t.pinned ? " wx-pinned" : ""}`}
-              onClick={() => onOpen(t.id)}
-              role="listitem"
-              aria-label={`打开与 ${t.name} 的会话`}
-            >
-              <div className="wx-avatar" aria-hidden>
-                {t.avatar}
-              </div>
-              <div className="wx-row-body">
-                <div className="wx-row-top">
-                  <span className="wx-row-name">
-                    {t.name}
-                    {t.unread ? (
-                      <span className="wx-badge">{t.unread > 99 ? "99+" : t.unread}</span>
-                    ) : null}
-                  </span>
-                  <span className="wx-row-time">{t.time}</span>
-                </div>
-                <div className="wx-row-preview">{t.lastMessage}</div>
-              </div>
-            </button>
+              thread={t}
+              isOpen={openSwipeId === t.id}
+              onOpenSwipe={setOpenSwipeId}
+              onOpenChat={(id) => {
+                setOpenSwipeId(null);
+                onOpen(id);
+              }}
+              onMarkUnread={onMarkUnread}
+              onDelete={onDeleteThread}
+            />
           ))
         )}
       </div>

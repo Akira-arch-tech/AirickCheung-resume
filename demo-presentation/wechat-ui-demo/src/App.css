@@ -907,3 +907,495 @@
   color: #ccc;
   padding: 16px 0 32px;
 }
+
+/* —— PRD 迭代：会话左滑 —— */
+.wx-swipe-hint {
+  font-size: 11px;
+  color: var(--wx-sub);
+  margin: 0 4px 6px;
+  padding: 0 8px;
+}
+
+.wx-list-swipe {
+  padding: 0;
+}
+
+.wx-swipe-host {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 0.5px solid #ebebeb;
+}
+
+.wx-swipe-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  z-index: 0;
+}
+
+.wx-swipe-btn {
+  width: 66px;
+  border: none;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.wx-swipe-unread {
+  background: #c8c8c8;
+}
+
+.wx-swipe-del {
+  background: #fa5151;
+}
+
+.wx-swipe-front {
+  position: relative;
+  z-index: 1;
+  background: var(--wx-white);
+  touch-action: pan-y;
+  cursor: pointer;
+}
+
+.wx-swipe-row-inner {
+  border-bottom: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.wx-muted-icon {
+  margin-left: 4px;
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+/* —— 群系统消息 / 昵称 —— */
+.wx-msg-system {
+  text-align: center;
+  margin: 10px 24px;
+}
+
+.wx-msg-system span {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--wx-sub);
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  max-width: 90%;
+  line-height: 1.35;
+}
+
+.wx-msg-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 72%;
+}
+
+.wx-msg.me .wx-msg-stack {
+  align-items: flex-end;
+}
+
+.wx-msg-nick {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 2px;
+  padding: 0 2px;
+}
+
+.wx-bubble-tap {
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+/* —— 语音播放态 —— */
+.wx-bubble-voice.playing .wx-voice-waves i {
+  animation-duration: 0.45s;
+  background: var(--wx-green);
+}
+
+/* —— 表情半屏面板（PRD 4.6） —— */
+.wx-emoji-more {
+  margin-left: auto;
+  padding: 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--wx-sub);
+  border: none;
+  background: transparent;
+}
+
+.wx-emoji-panel {
+  flex-shrink: 0;
+  background: #f3f3f3;
+  border-top: 0.5px solid #ddd;
+  max-height: 38vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wx-emoji-tabs {
+  display: flex;
+  border-bottom: 0.5px solid #ddd;
+  background: #ececec;
+}
+
+.wx-emoji-tab {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: var(--wx-sub);
+}
+
+.wx-emoji-tab.active {
+  color: var(--wx-green);
+  font-weight: 600;
+  background: #f3f3f3;
+}
+
+.wx-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  padding: 10px 8px 12px;
+  overflow-y: auto;
+}
+
+.wx-emoji-cell {
+  aspect-ratio: 1;
+  font-size: 24px;
+  border: none;
+  background: var(--wx-white);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* —— 图片 lightbox（PRD 4.5） —— */
+.wx-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.82);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: zoom-out;
+}
+
+.wx-lightbox-inner {
+  text-align: center;
+  cursor: default;
+}
+
+.wx-lightbox-img {
+  font-size: min(28vw, 120px);
+  line-height: 1.2;
+}
+
+.wx-lightbox-cap {
+  color: #fff;
+  font-size: 15px;
+  margin: 12px 0 0;
+}
+
+.wx-lightbox-tip {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+/* —— 发现二级占位 / 子页 —— */
+.wx-subpage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--wx-bg);
+}
+
+.wx-subpage-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.wx-placeholder-hero {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 16px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wx-placeholder-icon {
+  font-size: 44px;
+}
+
+.wx-placeholder-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.wx-placeholder-desc {
+  font-size: 14px;
+  color: var(--wx-sub);
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.wx-placeholder-tag {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* —— 个人资料 / 设置表单 —— */
+.wx-profile-tap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px 20px;
+  background: var(--wx-white);
+  border: none;
+  border-bottom: 0.5px solid var(--wx-border);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.wx-form-block {
+  background: var(--wx-white);
+  padding: 14px 16px;
+  border-bottom: 0.5px solid #eee;
+}
+
+.wx-form-label {
+  display: block;
+  font-size: 13px;
+  color: var(--wx-sub);
+  margin-bottom: 8px;
+}
+
+.wx-form-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wx-form-hint {
+  font-size: 13px;
+  color: var(--wx-sub);
+}
+
+.wx-form-input {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 16px;
+}
+
+.wx-form-static {
+  font-size: 16px;
+  color: var(--wx-sub);
+}
+
+.wx-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--wx-white);
+  border: none;
+  border-bottom: 0.5px solid #eee;
+  font-size: 16px;
+  text-align: left;
+}
+
+.wx-setting-btn {
+  cursor: pointer;
+}
+
+.wx-switch {
+  width: 44px;
+  height: 26px;
+  accent-color: var(--wx-green);
+}
+
+.wx-chevron {
+  color: var(--wx-sub);
+  font-size: 14px;
+}
+
+/* —— 通讯录字母索引 —— */
+.wx-contacts-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  position: relative;
+}
+
+.wx-contacts-scroll {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wx-index-bar {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2;
+}
+
+.wx-index-bar button {
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--wx-green);
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* —— 朋友圈评论层 —— */
+.wx-moment-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.wx-moment-comment-btn {
+  font-size: 13px;
+  color: #576b95;
+  border: none;
+  background: #f7f7f7;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.wx-moment-comments-preview {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #f3f3f3;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.wx-moment-comment-line {
+  margin-bottom: 4px;
+}
+
+.wx-moment-comment-line:last-child {
+  margin-bottom: 0;
+}
+
+.wx-comment-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.wx-comment-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  background: #f7f7f7;
+  border-radius: 12px 12px 0 0;
+  padding-bottom: max(12px, var(--safe-bottom));
+  animation: wx-sheet-up 0.22s ease;
+}
+
+.wx-comment-sheet-title {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 12px 10px;
+  border-bottom: 0.5px solid #ddd;
+}
+
+.wx-comment-sheet-list {
+  max-height: 36vh;
+  overflow-y: auto;
+  padding: 8px 12px;
+  background: var(--wx-white);
+}
+
+.wx-comment-sheet-row {
+  padding: 8px 0;
+  border-bottom: 0.5px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.wx-comment-author {
+  color: #576b95;
+  margin-right: 4px;
+}
+
+.wx-comment-sheet-hint {
+  font-size: 12px;
+  color: #bbb;
+  margin: 8px 0 0;
+}
+
+.wx-comment-sheet-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #eee;
+  align-items: center;
+}
+
+.wx-comment-input {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 15px;
+}
+
+.wx-comment-send {
+  color: var(--wx-green);
+  font-weight: 600;
+  border: none;
+  background: none;
+  font-size: 15px;
+  padding: 6px 4px;
+}

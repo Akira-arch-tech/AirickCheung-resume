@@ -1,6 +1,12 @@
 export type TabId = "chats" | "contacts" | "discover" | "me";
 
-export type MessageKind = "text" | "image" | "voice" | "link" | "location";
+export type MessageKind =
+  | "text"
+  | "image"
+  | "voice"
+  | "link"
+  | "location"
+  | "system";
 
 export interface ChatThread {
   id: string;
@@ -10,6 +16,8 @@ export interface ChatThread {
   time: string;
   unread?: number;
   pinned?: boolean;
+  /** 消息免打扰（小月亮，演示） */
+  muted?: boolean;
 }
 
 export interface ChatMessage {
@@ -18,7 +26,10 @@ export interface ChatMessage {
   time: string;
   kind: MessageKind;
   text?: string;
-  /** 图片类消息：用 Emoji 占位演示 */
+  /** 群聊内对方昵称（PRD 4.4） */
+  senderName?: string;
+  /** 系统提示文案（居中灰条） */
+  systemText?: string;
   imageEmoji?: string;
   imageCaption?: string;
   voiceSeconds?: number;
@@ -32,6 +43,11 @@ export interface ContactGroup {
   items: { id: string; name: string; avatar: string }[];
 }
 
+export interface MomentComment {
+  author: string;
+  text: string;
+}
+
 export interface MomentPost {
   id: string;
   author: string;
@@ -39,4 +55,5 @@ export interface MomentPost {
   text: string;
   time: string;
   images: string[];
+  comments?: MomentComment[];
 }

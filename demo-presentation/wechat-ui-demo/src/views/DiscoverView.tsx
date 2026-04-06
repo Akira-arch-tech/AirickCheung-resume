@@ -2,10 +2,10 @@ import { discoverItems } from "../data/mock";
 
 interface DiscoverViewProps {
   onOpenMoments: () => void;
-  showToast: (message: string) => void;
+  onOpenStub: (stub: { title: string; icon: string; description: string }) => void;
 }
 
-export function DiscoverView({ onOpenMoments, showToast }: DiscoverViewProps) {
+export function DiscoverView({ onOpenMoments, onOpenStub }: DiscoverViewProps) {
   return (
     <>
       <header className="wx-header">
@@ -20,7 +20,12 @@ export function DiscoverView({ onOpenMoments, showToast }: DiscoverViewProps) {
               className="wx-discover-row wx-discover-btn"
               onClick={() => {
                 if (item.id === "d1") onOpenMoments();
-                else showToast(`「${item.title}」为界面占位，可继续扩展子页`);
+                else
+                  onOpenStub({
+                    title: item.title,
+                    icon: item.icon,
+                    description: item.subtitle || `${item.title} 功能演示页（PRD 4.11）`,
+                  });
               }}
             >
               <span className="wx-discover-icon" aria-hidden>
@@ -31,7 +36,7 @@ export function DiscoverView({ onOpenMoments, showToast }: DiscoverViewProps) {
             </button>
           ))}
         </div>
-        <p className="wx-footer-note">点击「朋友圈」可进入可交互演示流；其余入口可接子页面。</p>
+        <p className="wx-footer-note">除朋友圈外，其余入口进入统一二级演示模板。</p>
       </div>
     </>
   );

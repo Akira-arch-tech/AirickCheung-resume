@@ -10,6 +10,10 @@ interface ContactsViewProps {
 export function ContactsView({ onOpenThread, showToast }: ContactsViewProps) {
   const [sheet, setSheet] = useState<null | { name: string; avatar: string; id: string }>(null);
 
+  function scrollToLetter(letter: string) {
+    document.getElementById(`wx-sec-${letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <>
       <header className="wx-header">
@@ -23,51 +27,60 @@ export function ContactsView({ onOpenThread, showToast }: ContactsViewProps) {
           👤+
         </button>
       </header>
-      <div className="wx-list">
-        <button type="button" className="wx-row" onClick={() => showToast("演示：好友请求列表")}>
-          <div className="wx-avatar" style={{ background: "#fa9d3b", color: "#fff", fontSize: 22 }}>
-            🔍
-          </div>
-          <div className="wx-row-body">
-            <div className="wx-row-name">新的朋友</div>
-          </div>
-        </button>
-        <button type="button" className="wx-row" onClick={() => showToast("演示：群聊列表")}>
-          <div className="wx-avatar" style={{ background: "#2782d7", color: "#fff", fontSize: 22 }}>
-            👥
-          </div>
-          <div className="wx-row-body">
-            <div className="wx-row-name">群聊</div>
-          </div>
-        </button>
-        <button type="button" className="wx-row" onClick={() => showToast("演示：标签管理")}>
-          <div className="wx-avatar" style={{ background: "#07c160", color: "#fff", fontSize: 22 }}>
-            🏷️
-          </div>
-          <div className="wx-row-body">
-            <div className="wx-row-name">标签</div>
-          </div>
-        </button>
-        {contactGroups.map((g) => (
-          <section key={g.letter}>
-            <div className="wx-section-title">{g.letter}</div>
-            {g.items.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                className="wx-row"
-                onClick={() => setSheet({ id: c.id, name: c.name, avatar: c.avatar })}
-              >
-                <div className="wx-avatar" aria-hidden>
-                  {c.avatar}
-                </div>
-                <div className="wx-row-body">
-                  <div className="wx-row-name">{c.name}</div>
-                </div>
-              </button>
-            ))}
-          </section>
-        ))}
+      <div className="wx-contacts-wrap">
+        <div className="wx-list wx-contacts-scroll">
+          <button type="button" className="wx-row" onClick={() => showToast("演示：好友请求列表")}>
+            <div className="wx-avatar" style={{ background: "#fa9d3b", color: "#fff", fontSize: 22 }}>
+              🔍
+            </div>
+            <div className="wx-row-body">
+              <div className="wx-row-name">新的朋友</div>
+            </div>
+          </button>
+          <button type="button" className="wx-row" onClick={() => showToast("演示：群聊列表")}>
+            <div className="wx-avatar" style={{ background: "#2782d7", color: "#fff", fontSize: 22 }}>
+              👥
+            </div>
+            <div className="wx-row-body">
+              <div className="wx-row-name">群聊</div>
+            </div>
+          </button>
+          <button type="button" className="wx-row" onClick={() => showToast("演示：标签管理")}>
+            <div className="wx-avatar" style={{ background: "#07c160", color: "#fff", fontSize: 22 }}>
+              🏷️
+            </div>
+            <div className="wx-row-body">
+              <div className="wx-row-name">标签</div>
+            </div>
+          </button>
+          {contactGroups.map((g) => (
+            <section key={g.letter} id={`wx-sec-${g.letter}`}>
+              <div className="wx-section-title">{g.letter}</div>
+              {g.items.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  className="wx-row"
+                  onClick={() => setSheet({ id: c.id, name: c.name, avatar: c.avatar })}
+                >
+                  <div className="wx-avatar" aria-hidden>
+                    {c.avatar}
+                  </div>
+                  <div className="wx-row-body">
+                    <div className="wx-row-name">{c.name}</div>
+                  </div>
+                </button>
+              ))}
+            </section>
+          ))}
+        </div>
+        <nav className="wx-index-bar" aria-label="字母索引（PRD 4.8）">
+          {contactGroups.map((g) => (
+            <button key={g.letter} type="button" onClick={() => scrollToLetter(g.letter)}>
+              {g.letter}
+            </button>
+          ))}
+        </nav>
       </div>
 
       <ActionSheet

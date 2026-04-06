@@ -4,9 +4,14 @@ function textMsg(
   id: string,
   from: "me" | "other",
   time: string,
-  text: string
+  text: string,
+  senderName?: string
 ): ChatMessage {
-  return { id, from, time, kind: "text", text };
+  return { id, from, time, kind: "text", text, senderName };
+}
+
+function systemMsg(id: string, time: string, systemText: string): ChatMessage {
+  return { id, from: "other", time, kind: "system", systemText };
 }
 
 export const chatThreads: ChatThread[] = [
@@ -56,9 +61,11 @@ const seedMessages: Record<string, ChatMessage[]> = {
     },
   ],
   t2: [
-    textMsg("m1", "other", "10:10", "这版交互再对齐一下微信的规范。"),
+    systemMsg("s0", "09:50", "小王邀请 李工、Zoe 加入了群聊"),
+    systemMsg("s1", "09:55", "群主已启用「群聊邀请确认」"),
+    textMsg("m1", "other", "10:10", "这版交互再对齐一下微信的规范。", "小王"),
     textMsg("m2", "me", "10:12", "收到，我下午改一版。"),
-    textMsg("m3", "other", "10:24", "原型我发群里了。"),
+    textMsg("m3", "other", "10:24", "原型我发群里了。", "小王"),
     {
       id: "m4",
       from: "me",
@@ -90,7 +97,6 @@ export function getMessagesForThread(threadId: string): ChatMessage[] {
   ];
 }
 
-/** 通讯录联系人 id → 已有会话 id，用于「发消息」跳转 */
 export const contactToThreadId: Record<string, string> = {
   c4: "t3",
 };
@@ -115,10 +121,10 @@ export const contactGroups: ContactGroup[] = [
 
 export const discoverItems = [
   { id: "d1", icon: "⭕", title: "朋友圈", subtitle: "" },
-  { id: "d2", icon: "📹", title: "视频号", subtitle: "" },
-  { id: "d3", icon: "📡", title: "直播", subtitle: "" },
-  { id: "d4", icon: "🛒", title: "购物", subtitle: "" },
-  { id: "d5", icon: "🎮", title: "游戏", subtitle: "" },
+  { id: "d2", icon: "📹", title: "视频号", subtitle: "短视频与直播推荐（演示）" },
+  { id: "d3", icon: "📡", title: "直播", subtitle: "观看直播内容（演示）" },
+  { id: "d4", icon: "🛒", title: "购物", subtitle: "好物与订单入口（演示）" },
+  { id: "d5", icon: "🎮", title: "游戏", subtitle: "休闲游戏中心（演示）" },
 ];
 
 export const momentFeed: MomentPost[] = [
@@ -129,6 +135,10 @@ export const momentFeed: MomentPost[] = [
     text: "新版本原型已发，欢迎拍砖～ #演示",
     time: "2 小时前",
     images: ["📱", "🖥️"],
+    comments: [
+      { author: "Alice", text: "已看，晚上对一下？" },
+      { author: "我", text: "👍" },
+    ],
   },
   {
     id: "p2",
@@ -137,6 +147,7 @@ export const momentFeed: MomentPost[] = [
     text: "今天在写 React 组件，顺手复刻了一波微信 UI。",
     time: "昨天",
     images: ["🎨"],
+    comments: [{ author: "产品小王", text: "求开源链接（演示）" }],
   },
   {
     id: "p3",
@@ -145,5 +156,6 @@ export const momentFeed: MomentPost[] = [
     text: "GitHub Pages 部署成功 ✅",
     time: "周一",
     images: [],
+    comments: [],
   },
 ];

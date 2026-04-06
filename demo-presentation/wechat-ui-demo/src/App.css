@@ -1399,3 +1399,391 @@
   font-size: 15px;
   padding: 6px 4px;
 }
+
+/* —— P0 时间气泡 / P2 引用条 —— */
+.wx-msg-time-chip {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.wx-msg-time-chip span {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--wx-sub);
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+
+.wx-bubble-quote {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+  color: var(--wx-sub);
+  max-width: 100%;
+  text-align: left;
+}
+
+.wx-msg.me .wx-bubble-quote {
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+}
+
+.wx-bubble-quote-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--wx-green);
+  flex-shrink: 0;
+}
+
+.wx-bubble-quote-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.wx-reply-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f9f9f9;
+  border-top: 0.5px solid var(--wx-border);
+  flex-shrink: 0;
+}
+
+.wx-reply-bar-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--wx-sub);
+}
+
+.wx-reply-bar-label {
+  color: var(--wx-green);
+  margin-right: 6px;
+}
+
+.wx-reply-bar-snippet {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wx-reply-bar-close {
+  font-size: 20px;
+  padding: 4px 8px;
+  line-height: 1;
+  color: var(--wx-sub);
+}
+
+.wx-input-at {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 6px 2px;
+  color: #576b95;
+  flex-shrink: 0;
+}
+
+/* —— P2 深色 / 横屏 —— */
+.wx-phone.wx-dark {
+  --wx-bg: #111;
+  --wx-white: #1e1e1e;
+  --wx-text: #e8e8e8;
+  --wx-sub: #8e8e8e;
+  --wx-border: #333;
+  --wx-bubble-other: #2c2c2c;
+  --wx-bubble-me: #2d4a22;
+  --wx-bar-bg: #1a1a1a;
+}
+
+.wx-phone.wx-landscape {
+  width: min(720px, 100vw - 8px);
+  height: min(390px, 100dvh - 48px);
+}
+
+/* —— 假登录 —— */
+.wx-login {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 28px;
+  min-height: 0;
+}
+
+.wx-login-brand {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.wx-login-title {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.wx-login-sub {
+  font-size: 14px;
+  color: var(--wx-sub);
+  text-align: center;
+  margin: 0 0 28px;
+}
+
+.wx-login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.wx-login-label {
+  font-size: 13px;
+  color: var(--wx-sub);
+}
+
+.wx-login-field input {
+  border: 0.5px solid var(--wx-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 16px;
+  background: var(--wx-white);
+}
+
+.wx-login-btn {
+  margin-top: 8px;
+  background: var(--wx-green);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+}
+
+.wx-login-note {
+  font-size: 11px;
+  color: var(--wx-sub);
+  text-align: center;
+  margin-top: 20px;
+  line-height: 1.5;
+}
+
+/* —— 全局搜索 —— */
+.wx-global-search {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--wx-bg);
+}
+
+.wx-global-search-toolbar {
+  flex-shrink: 0;
+  padding: 0 0 8px;
+  background: var(--wx-bar-bg);
+  border-bottom: 0.5px solid var(--wx-border);
+}
+
+.wx-global-search-input-wrap {
+  margin: 8px 12px;
+}
+
+.wx-global-search-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 10px 4px;
+  overflow-x: auto;
+}
+
+.wx-global-search-tab {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 16px;
+  background: var(--wx-white);
+  color: var(--wx-sub);
+  border: none;
+}
+
+.wx-global-search-tab.active {
+  background: var(--wx-green);
+  color: #fff;
+}
+
+.wx-global-search-results {
+  flex: 1;
+  min-height: 0;
+}
+
+.wx-global-search-section .wx-section-title {
+  padding-left: 16px;
+}
+
+/* —— 添加朋友 / 扫一扫 —— */
+.wx-add-friend,
+.wx-scan {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--wx-bg);
+}
+
+.wx-add-friend-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.wx-add-friend-primary {
+  margin: 0 16px 16px;
+  padding: 14px;
+  background: var(--wx-green);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+}
+
+.wx-add-friend-scan-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 16px;
+  padding: 14px 16px;
+  background: var(--wx-white);
+  border-radius: 8px;
+  font-size: 16px;
+  border: none;
+  text-align: left;
+}
+
+.wx-add-friend-scan-row .wx-chevron {
+  margin-left: auto;
+}
+
+.wx-add-friend-scan-ic {
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+.wx-scan-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 20px;
+}
+
+.wx-scan-frame {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  border: 1px solid rgba(7, 193, 96, 0.35);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.wx-scan-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: var(--wx-green);
+  border-style: solid;
+}
+
+.wx-scan-corner.tl {
+  top: -1px;
+  left: -1px;
+  border-width: 3px 0 0 3px;
+}
+
+.wx-scan-corner.tr {
+  top: -1px;
+  right: -1px;
+  border-width: 3px 3px 0 0;
+}
+
+.wx-scan-corner.bl {
+  bottom: -1px;
+  left: -1px;
+  border-width: 0 0 3px 3px;
+}
+
+.wx-scan-corner.br {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 3px 3px 0;
+}
+
+.wx-scan-tip {
+  font-size: 14px;
+  color: var(--wx-sub);
+  text-align: center;
+  margin: 0;
+}
+
+.wx-scan-simulate {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 0.5px solid var(--wx-border);
+  background: var(--wx-white);
+  font-size: 15px;
+}
+
+/* —— 会话列表全局搜索入口 —— */
+.wx-chats-global-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 12px 6px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--wx-white);
+  border: none;
+  font-size: 14px;
+  color: var(--wx-sub);
+  text-align: left;
+}
+
+/* —— 通讯录搜索条 —— */
+.wx-contacts-toolbar {
+  padding: 6px 12px 8px;
+  background: var(--wx-bar-bg);
+  border-bottom: 0.5px solid var(--wx-border);
+  flex-shrink: 0;
+}
+
+/* —— 设置退出 —— */
+.wx-logout-btn {
+  margin-top: 28px;
+  padding: 12px 24px;
+  font-size: 15px;
+  color: #fa5151;
+  background: var(--wx-white);
+  border: 0.5px solid var(--wx-border);
+  border-radius: 8px;
+}
+
+/* —— 朋友圈下拉刷新 —— */
+.wx-moments-ptr {
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.wx-moments-ptr-label {
+  font-size: 12px;
+  color: var(--wx-sub);
+  padding-bottom: 6px;
+}

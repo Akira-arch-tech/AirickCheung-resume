@@ -8,11 +8,23 @@ import {
   momentFeed,
 } from "./data/mock";
 import type { ChatThread, TabId } from "./types";
-import { loadThreadOverrides, saveThreadOverrides, type ThreadOverrides } from "./utils/demoStorage";
+import {
+  isLoggedIn,
+  loadThreadOverrides,
+  loadUiPrefs,
+  saveThreadOverrides,
+  saveUiPrefs,
+  setLoggedInFlag,
+  type ThreadOverrides,
+  type UiPrefs,
+} from "./utils/demoStorage";
+import { AddFriendView } from "./views/AddFriendView";
 import { ChatRoomView } from "./views/ChatRoomView";
 import { ChatsView } from "./views/ChatsView";
 import { ContactsView } from "./views/ContactsView";
 import { DiscoverView } from "./views/DiscoverView";
+import { GlobalSearchView } from "./views/GlobalSearchView";
+import { LoginView } from "./views/LoginView";
 import { MomentsView } from "./views/MomentsView";
 import { PlaceholderDiscoverView } from "./views/PlaceholderDiscoverView";
 import { ProfileEditView } from "./views/ProfileEditView";
@@ -45,6 +57,8 @@ function visibleThreads(
 }
 
 export default function App() {
+  const [loggedIn, setLoggedIn] = useState(() => isLoggedIn());
+  const [uiPrefs, setUiPrefs] = useState<UiPrefs>(() => loadUiPrefs());
   const [tab, setTab] = useState<TabId>("chats");
   const [openChatId, setOpenChatId] = useState<string | null>(null);
   const [momentsOpen, setMomentsOpen] = useState(false);
@@ -54,6 +68,8 @@ export default function App() {
     description: string;
   } | null>(null);
   const [meOverlay, setMeOverlay] = useState<null | "profile" | "settings">(null);
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+  const [addFriendOpen, setAddFriendOpen] = useState(false);
 
   const [overrides, setOverrides] = useState<ThreadOverrides>(() => loadThreadOverrides());
   const [patches, setPatches] = useState<Record<string, Partial<ChatThread>>>({});
@@ -76,6 +92,27 @@ export default function App() {
     });
   }, []);
 
+  const updateUiPrefs = useCallback((partial: Partial<UiPrefs>) => {
+    setUiPrefs((prev) => {
+      const n = { ...prev, ...partial };
+      saveUiPrefs(n);
+      return n;
+    });
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    setLoggedInFlag(false);
+    setLoggedIn(false);
+    setMeOverlay(null);
+    setGlobalSearchOpen(false);
+    setAddFriendOpen(false);
+    setOpenChatId(null);
+    setMomentsOpen(false);
+    setDiscoverStub(null);
+    setTab("chats");
+    showToast("已退出登录（演示）");
+  }, [showToast]);
+
   const activeThread = useMemo(
     () => threads.find((t) => t.id === openChatId),
     [openChatId, threads]
@@ -95,15 +132,18 @@ export default function App() {
     }));
   }, []);
 
-  const onMarkUnread = useCallback((id: string) => {
-    setPatches((p) => {
-      const base = CHAT_SEED.find((t) => t.id === id)!;
-      const merged = { ...base, ...p[id] };
-      const nextUnread = (merged.unread ?? 0) + 1;
-      return { ...p, [id]: { ...p[id], unread: nextUnread } };
-    });
-    showToast("已标为未读");
-  }, [showToast]);
+  const onMarkUnread = useCallback(
+    (id: string) => {
+      setPatches((p) => {
+        const base = CHAT_SEED.find((t) => t.id === id)!;
+        const merged = { ...base, ...p[id] };
+        const nextUnread = (merged.unread ?? 0) + 1;
+        return { ...p, [id]: { ...p[id], unread: nextUnread } };
+      });
+      showToast("已标为未读");
+    },
+    [showToast]
+  );
 
   const onDeleteThread = useCallback(
     (id: string) => {
@@ -122,20 +162,32 @@ export default function App() {
     setMomentsOpen(false);
     setDiscoverStub(null);
     setMeOverlay(null);
+    setGlobalSearchOpen(false);
+    setAddFriendOpen(false);
   };
 
   function openThreadFromContacts(threadId: string) {
     setTab("chats");
     setOpenChatId(threadId);
+    setAddFriendOpen(false);
+    setGlobalSearchOpen(false);
   }
 
   const showTabBar =
-    !openChatId && !momentsOpen && !discoverStub && !meOverlay;
+    loggedIn &&
+    !openChatId &&
+    !momentsOpen &&
+    !discoverStub &&
+    !meOverlay &&
+    !globalSearchOpen &&
+    !addFriendOpen;
 
   const seedThread = openChatId ? CHAT_SEED.find((t) => t.id === openChatId) : undefined;
 
+  const phoneClass = `wx-phone${uiPrefs.darkMode ? " wx-dark" : ""}${uiPrefs.landscape ? " wx-landscape" : ""}`;
+
   return (
-    <div className="wx-phone">
+    <div className={phoneClass}>
       <div className="wx-notch" aria-hidden />
       <div className="wx-status" role="status">
         <span>{statusTime}</span>
@@ -144,7 +196,26 @@ export default function App() {
         </span>
       </div>
       <main className="wx-main">
-        {openChatId && activeThread && seedThread ? (
+        {!loggedIn ? (
+          <LoginView
+            onLogin={() => {
+              setLoggedInFlag(true);
+              setLoggedIn(true);
+            }}
+          />
+        ) : globalSearchOpen ? (
+          <GlobalSearchView
+            threads={threads}
+            onClose={() => setGlobalSearchOpen(false)}
+            onOpenChat={(id) => {
+              setOpenChatId(id);
+              setTab("chats");
+              setGlobalSearchOpen(false);
+            }}
+          />
+        ) : addFriendOpen ? (
+          <AddFriendView onBack={() => setAddFriendOpen(false)} showToast={showToast} />
+        ) : openChatId && activeThread && seedThread ? (
           <ChatRoomView
             key={openChatId}
             threadId={activeThread.id}
@@ -197,7 +268,13 @@ export default function App() {
         ) : meOverlay === "profile" ? (
           <ProfileEditView onBack={() => setMeOverlay(null)} showToast={showToast} />
         ) : meOverlay === "settings" ? (
-          <SettingsStackView onBack={() => setMeOverlay(null)} showToast={showToast} />
+          <SettingsStackView
+            onBack={() => setMeOverlay(null)}
+            showToast={showToast}
+            uiPrefs={uiPrefs}
+            onUiPrefsChange={updateUiPrefs}
+            onLogout={handleLogout}
+          />
         ) : (
           <>
             {tab === "chats" && (
@@ -207,10 +284,16 @@ export default function App() {
                 showToast={showToast}
                 onMarkUnread={onMarkUnread}
                 onDeleteThread={onDeleteThread}
+                onOpenGlobalSearch={() => setGlobalSearchOpen(true)}
+                onOpenAddFriend={() => setAddFriendOpen(true)}
               />
             )}
             {tab === "contacts" && (
-              <ContactsView onOpenThread={openThreadFromContacts} showToast={showToast} />
+              <ContactsView
+                onOpenThread={openThreadFromContacts}
+                showToast={showToast}
+                onOpenAddFriend={() => setAddFriendOpen(true)}
+              />
             )}
             {tab === "discover" && (
               <DiscoverView

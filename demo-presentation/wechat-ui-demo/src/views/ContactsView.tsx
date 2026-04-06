@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ActionSheet } from "../components/ActionSheet";
 import { contactGroups, contactToThreadId } from "../data/mock";
 
 interface ContactsViewProps {
   onOpenThread: (threadId: string) => void;
   showToast: (message: string) => void;
+  onOpenAddFriend: () => void;
 }
 
-export function ContactsView({ onOpenThread, showToast }: ContactsViewProps) {
+export function ContactsView({ onOpenThread, showToast, onOpenAddFriend }: ContactsViewProps) {
   const [sheet, setSheet] = useState<null | { name: string; avatar: string; id: string }>(null);
+  const [query, setQuery] = useState("");
+
+  const filteredGroups = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return contactGroups;
+    return contactGroups
+      .map((g) => ({
+        ...g,
+        items: g.items.filter((c) => c.name.toLowerCase().includes(q)),
+      }))
+      .filter((g) => g.items.length > 0);
+  }, [query]);
 
   function scrollToLetter(letter: string) {
     document.getElementById(`wx-sec-${letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -18,15 +31,29 @@ export function ContactsView({ onOpenThread, showToast }: ContactsViewProps) {
     <>
       <header className="wx-header">
         <span className="wx-header-title">通讯录</span>
-        <button
-          type="button"
-          className="wx-header-action right"
-          aria-label="添加朋友"
-          onClick={() => showToast("演示：添加朋友 / 手机联系人")}
-        >
+        <button type="button" className="wx-header-action right" aria-label="添加朋友" onClick={onOpenAddFriend}>
           👤+
         </button>
       </header>
+      <div className="wx-contacts-toolbar">
+        <label className="wx-search-wrap">
+          <span className="wx-search-icon" aria-hidden>
+            🔍
+          </span>
+          <input
+            className="wx-search-input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="搜索联系人"
+            aria-label="搜索联系人"
+          />
+          {query ? (
+            <button type="button" className="wx-search-clear" onClick={() => setQuery("")} aria-label="清除">
+              ×
+            </button>
+          ) : null}
+        </label>
+      </div>
       <div className="wx-contacts-wrap">
         <div className="wx-list wx-contacts-scroll">
           <button type="button" className="wx-row" onClick={() => showToast("演示：好友请求列表")}>
@@ -53,7 +80,7 @@ export function ContactsView({ onOpenThread, showToast }: ContactsViewProps) {
               <div className="wx-row-name">标签</div>
             </div>
           </button>
-          {contactGroups.map((g) => (
+          {filteredGroups.map((g) => (
             <section key={g.letter} id={`wx-sec-${g.letter}`}>
               <div className="wx-section-title">{g.letter}</div>
               {g.items.map((c) => (
@@ -75,7 +102,7 @@ export function ContactsView({ onOpenThread, showToast }: ContactsViewProps) {
           ))}
         </div>
         <nav className="wx-index-bar" aria-label="字母索引（PRD 4.8）">
-          {contactGroups.map((g) => (
+          {filteredGroups.map((g) => (
             <button key={g.letter} type="button" onClick={() => scrollToLetter(g.letter)}>
               {g.letter}
             </button>

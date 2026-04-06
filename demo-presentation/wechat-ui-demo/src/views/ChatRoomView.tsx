@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from "react";
-import { getMessagesForThread } from "../data/mock";
+import { getMessagesForThread, groupAtMembers } from "../data/mock";
 import { ActionSheet } from "../components/ActionSheet";
 import type { ChatMessage } from "../types";
 
@@ -43,8 +43,14 @@ export function previewForMessage(m: ChatMessage): string {
       return `[链接] ${m.linkTitle ?? ""}`;
     case "location":
       return `[位置] ${m.placeName ?? ""}`;
-    default:
-      return m.text ?? "";
+    default: {
+      const body = m.text ?? "";
+      if (m.quoteRef) {
+        const q = m.quoteRef.text.length > 18 ? `${m.quoteRef.text.slice(0, 18)}…` : m.quoteRef.text;
+        return `「${q}」${body}`;
+      }
+      return body;
+    }
   }
 }
 
@@ -52,6 +58,15 @@ function SystemLine({ text }: { text: string }) {
   return (
     <div className="wx-msg-system" role="note">
       <span>{text}</span>
+    </div>
+  );
+}
+
+/** PRD P0 · 时间分隔气泡 */
+function TimeChip({ label }: { label: string }) {
+  return (
+    <div className="wx-msg-time-chip" role="time">
+      <span>{label}</span>
     </div>
   );
 }
@@ -190,6 +205,15 @@ function MessageBubble({
     default:
       inner = (
         <div className="wx-bubble" {...plainPress}>
+          {m.quoteRef ? (
+            <div className="wx-bubble-quote">
+              <span className="wx-bubble-quote-bar" aria-hidden />
+              <span className="wx-bubble-quote-text">
+                {m.quoteRef.sender ? `${m.quoteRef.sender}：` : ""}
+                {m.quoteRef.text}
+              </span>
+            </div>
+          ) : null}
           {m.text}
         </div>
       );
@@ -238,6 +262,8 @@ export function ChatRoomView({
   const [lightbox, setLightbox] = useState<{ emoji: string; cap?: string } | null>(null);
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
   const [msgMenu, setMsgMenu] = useState<ChatMessage | null>(null);
+  const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null);
+  const [showAtSheet, setShowAtSheet] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<number[]>([]);
   const voiceStopRef = useRef<number | null>(null);
@@ -299,14 +325,30 @@ export function ChatRoomView({
   function sendText(textRaw: string) {
     const text = textRaw.trim();
     if (!text) return;
+    const refMsg = replyingTo;
+    const quoteRef =
+      refMsg && refMsg.kind !== "system"
+        ? {
+            text:
+              refMsg.kind === "text"
+                ? refMsg.text ?? previewForMessage(refMsg)
+                : previewForMessage(refMsg),
+            sender:
+              refMsg.from === "other"
+                ? refMsg.senderName ?? title
+                : "我",
+          }
+        : undefined;
     pushMessage({
       id: `local-${Date.now()}`,
       from: "me",
       time: nowTime(),
       kind: "text",
       text,
+      quoteRef,
     });
     setDraft("");
+    setReplyingTo(null);
     setShowAttach(false);
     setShowEmojiPanel(false);
     scheduleAutoReply();
@@ -332,6 +374,12 @@ export function ChatRoomView({
     setDraft((d) => d + e);
   }
 
+  function insertAt(name: string) {
+    const at = name === "所有人" ? "@所有人 " : `@${name} `;
+    setDraft((d) => (d.endsWith(" ") || d.length === 0 ? d + at : `${d} ${at}`));
+    setShowAtSheet(false);
+  }
+
   return (
     <div className="wx-chat-room">
       <header className="wx-header">
@@ -349,23 +397,34 @@ export function ChatRoomView({
         </button>
       </header>
       <div className="wx-messages" ref={listRef}>
-        {messages.map((m) =>
-          m.kind === "system" ? (
-            <SystemLine key={m.id} text={m.systemText ?? ""} />
-          ) : (
-            <MessageBubble
-              key={m.id}
-              m={m}
-              myAvatar={myAvatar}
-              peerAvatar={avatar}
-              isGroup={isGroup}
-              playingVoiceId={playingVoiceId}
-              onToggleVoice={toggleVoice}
-              onImageTap={(emoji, cap) => setLightbox({ emoji, cap })}
-              onLongPress={(msg) => setMsgMenu(msg)}
-            />
-          )
-        )}
+        {(() => {
+          let lastTime = "";
+          const nodes: ReactNode[] = [];
+          for (const m of messages) {
+            if (m.kind === "system") {
+              nodes.push(<SystemLine key={m.id} text={m.systemText ?? ""} />);
+              continue;
+            }
+            if (m.time !== lastTime) {
+              nodes.push(<TimeChip key={`t-${m.id}`} label={m.time} />);
+              lastTime = m.time;
+            }
+            nodes.push(
+              <MessageBubble
+                key={m.id}
+                m={m}
+                myAvatar={myAvatar}
+                peerAvatar={avatar}
+                isGroup={isGroup}
+                playingVoiceId={playingVoiceId}
+                onToggleVoice={toggleVoice}
+                onImageTap={(emoji, cap) => setLightbox({ emoji, cap })}
+                onLongPress={(msg) => setMsgMenu(msg)}
+              />
+            );
+          }
+          return nodes;
+        })()}
         {typing ? (
           <div className="wx-msg other wx-typing-row">
             <div className="wx-msg-avatar" aria-hidden>
@@ -379,6 +438,17 @@ export function ChatRoomView({
           </div>
         ) : null}
       </div>
+      {replyingTo ? (
+        <div className="wx-reply-bar">
+          <div className="wx-reply-bar-text">
+            <span className="wx-reply-bar-label">引用</span>
+            <span className="wx-reply-bar-snippet">{previewForMessage(replyingTo)}</span>
+          </div>
+          <button type="button" className="wx-reply-bar-close" onClick={() => setReplyingTo(null)} aria-label="取消引用">
+            ×
+          </button>
+        </div>
+      ) : null}
       <div className="wx-emoji-bar">
         {QUICK_EMOJIS.map((e) => (
           <button
@@ -417,6 +487,20 @@ export function ChatRoomView({
         >
           {showAttach ? "⌄" : "＋"}
         </button>
+        {isGroup ? (
+          <button
+            type="button"
+            className="wx-input-at"
+            aria-label="选择 @ 成员"
+            onClick={() => {
+              setShowAtSheet(true);
+              setShowAttach(false);
+              setShowEmojiPanel(false);
+            }}
+          >
+            @
+          </button>
+        ) : null}
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -580,7 +664,11 @@ export function ChatRoomView({
                 },
                 {
                   label: "引用",
-                  onSelect: () => showToast("演示：引用回复样式可在 P2 扩展"),
+                  onSelect: () => {
+                    setReplyingTo(msgMenu);
+                    setMsgMenu(null);
+                    showToast("已选择引用，输入后发送");
+                  },
                 },
                 {
                   label: "撤回",
@@ -593,6 +681,16 @@ export function ChatRoomView({
               ]
             : []
         }
+      />
+
+      <ActionSheet
+        open={showAtSheet}
+        onClose={() => setShowAtSheet(false)}
+        title="选择提醒的人（演示）"
+        items={groupAtMembers.map((name) => ({
+          label: name,
+          onSelect: () => insertAt(name),
+        }))}
       />
     </div>
   );

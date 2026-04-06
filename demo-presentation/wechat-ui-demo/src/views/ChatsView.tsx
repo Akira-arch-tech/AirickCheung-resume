@@ -9,6 +9,8 @@ interface ChatsViewProps {
   showToast: (message: string) => void;
   onMarkUnread: (id: string) => void;
   onDeleteThread: (id: string) => void;
+  onOpenGlobalSearch: () => void;
+  onOpenAddFriend: () => void;
 }
 
 export function ChatsView({
@@ -17,6 +19,8 @@ export function ChatsView({
   showToast,
   onMarkUnread,
   onDeleteThread,
+  onOpenGlobalSearch,
+  onOpenAddFriend,
 }: ChatsViewProps) {
   const [query, setQuery] = useState("");
   const [addOpen, setAddOpen] = useState(false);
@@ -64,6 +68,10 @@ export function ChatsView({
             </button>
           ) : null}
         </label>
+        <button type="button" className="wx-chats-global-entry" onClick={onOpenGlobalSearch}>
+          <span aria-hidden>🔍</span>
+          全局搜索（会话 / 联系人 / 公众号）
+        </button>
         <p className="wx-swipe-hint">向左滑动会话可「标为未读 / 删除」（PRD 4.2）</p>
       </div>
       <div className="wx-list wx-list-swipe" role="list">
@@ -97,11 +105,17 @@ export function ChatsView({
           },
           {
             label: "添加朋友",
-            onSelect: () => showToast("演示：可打开搜索微信号 / 手机号"),
+            onSelect: () => {
+              setAddOpen(false);
+              onOpenAddFriend();
+            },
           },
           {
             label: "扫一扫",
-            onSelect: () => showToast("演示：可调用相机扫码"),
+            onSelect: () => {
+              setAddOpen(false);
+              onOpenAddFriend();
+            },
           },
         ]}
       />

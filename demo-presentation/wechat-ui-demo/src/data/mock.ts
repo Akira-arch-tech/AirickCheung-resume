@@ -101,6 +101,9 @@ export const contactToThreadId: Record<string, string> = {
   c4: "t3",
 };
 
+/** P2 群聊 @ 选择器成员（演示） */
+export const groupAtMembers = ["所有人", "小王", "小李", "Zoe", "Alice", "产品小王"];
+
 export const contactGroups: ContactGroup[] = [
   {
     letter: "A",

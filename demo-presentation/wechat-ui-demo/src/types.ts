@@ -26,6 +26,8 @@ export interface ChatMessage {
   time: string;
   kind: MessageKind;
   text?: string;
+  /** P2 引用回复条 */
+  quoteRef?: { sender?: string; text: string };
   /** 群聊内对方昵称（PRD 4.4） */
   senderName?: string;
   /** 系统提示文案（居中灰条） */

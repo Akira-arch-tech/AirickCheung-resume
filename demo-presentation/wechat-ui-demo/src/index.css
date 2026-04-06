@@ -1,0 +1,56 @@
+:root {
+  --wx-green: #07c160;
+  --wx-green-dark: #06ad56;
+  --wx-bg: #ededed;
+  --wx-white: #ffffff;
+  --wx-text: #111111;
+  --wx-sub: #888888;
+  --wx-border: #d9d9d9;
+  --wx-bubble-me: #95ec69;
+  --wx-bubble-other: #ffffff;
+  --wx-bar-bg: #f7f7f7;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+    "Microsoft YaHei", sans-serif;
+  line-height: 1.45;
+  color: var(--wx-text);
+  background: #1a1a1a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+input {
+  font: inherit;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

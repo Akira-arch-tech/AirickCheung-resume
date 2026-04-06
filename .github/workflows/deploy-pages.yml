@@ -1,0 +1,57 @@
+# 将根目录简历静态页 + demo-presentation/* 各子项目构建产物，一并部署到 GitHub Pages。
+# 新增 demo：在 demo-presentation/<名称>/ 下放项目，在本 workflow 中增加对应的 build 与拷贝步骤（或改为矩阵构建）。
+
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: demo-presentation/wechat-ui-demo/package-lock.json
+
+      - name: Build wechat-ui-demo
+        working-directory: demo-presentation/wechat-ui-demo
+        run: |
+          npm ci
+          npm run build
+
+      - name: Assemble site (resume root + demos)
+        run: |
+          mkdir -p _site/demo-presentation/wechat-ui-demo
+          cp index.html styles.css _site/
+          cp demo-presentation/index.html _site/demo-presentation/index.html
+          cp -r demo-presentation/wechat-ui-demo/dist/. _site/demo-presentation/wechat-ui-demo/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

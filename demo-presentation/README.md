@@ -7,6 +7,7 @@
 | 目录 | 说明 | 线上路径（GitHub Pages） |
 |------|------|--------------------------|
 | [wechat-ui-demo](./wechat-ui-demo/) | 微信风格 UI，React + Vite | `/demo-presentation/wechat-ui-demo/` |
+| fundamental-custom-design-demo | 定制品设计网站 Demo（独立仓库） | `https://akira-arch-tech.github.io/PM-demo-presentation/` |
 
 根简历地址：`https://akira-arch-tech.github.io/AirickCheung-resume/`  
 演示索引页：`https://akira-arch-tech.github.io/AirickCheung-resume/demo-presentation/`

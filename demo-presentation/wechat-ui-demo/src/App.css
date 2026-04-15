@@ -376,6 +376,16 @@
   padding: 6px 10px;
 }
 
+.wx-search-wrap-chat {
+  flex-wrap: wrap;
+  row-gap: 6px;
+}
+
+.wx-search-wrap-chat.focused {
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 0.5px #ececec;
+}
+
 .wx-search-icon {
   font-size: 14px;
   opacity: 0.5;
@@ -395,6 +405,22 @@
   line-height: 1;
   color: var(--wx-sub);
   padding: 0 4px;
+}
+
+.wx-search-recommend {
+  width: calc(100% + 20px);
+  margin-left: -10px;
+  margin-right: -10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  color: var(--wx-sub);
+  text-align: left;
+  background: linear-gradient(180deg, #fafafa 0%, #f6f6f6 100%);
+  border-top: 0.5px solid #ececec;
+  border-radius: 0 0 8px 8px;
 }
 
 .wx-empty-hint {
@@ -1741,20 +1767,6 @@
 }
 
 /* —— 会话列表全局搜索入口 —— */
-.wx-chats-global-entry {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 12px 6px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  background: var(--wx-white);
-  border: none;
-  font-size: 14px;
-  color: var(--wx-sub);
-  text-align: left;
-}
-
 /* —— 通讯录搜索条 —— */
 .wx-contacts-toolbar {
   padding: 6px 12px 8px;

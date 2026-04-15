@@ -25,6 +25,7 @@ export function ChatsView({
   const [query, setQuery] = useState("");
   const [addOpen, setAddOpen] = useState(false);
   const [openSwipeId, setOpenSwipeId] = useState<string | null>(null);
+  const [searchFocused, setSearchFocused] = useState(false);
 
   const sorted = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -51,7 +52,7 @@ export function ChatsView({
         </button>
       </header>
       <div className="wx-chats-toolbar">
-        <label className="wx-search-wrap">
+        <label className={`wx-search-wrap wx-search-wrap-chat${searchFocused ? " focused" : ""}`}>
           <span className="wx-search-icon" aria-hidden>
             🔍
           </span>
@@ -59,6 +60,8 @@ export function ChatsView({
             className="wx-search-input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
             placeholder="搜索"
             aria-label="搜索会话"
           />
@@ -67,11 +70,18 @@ export function ChatsView({
               ×
             </button>
           ) : null}
+          {searchFocused && !query.trim() ? (
+            <button
+              type="button"
+              className="wx-search-recommend"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onOpenGlobalSearch}
+            >
+              <span aria-hidden>🔍</span>
+              全局搜索（会话 / 联系人 / 公众号）
+            </button>
+          ) : null}
         </label>
-        <button type="button" className="wx-chats-global-entry" onClick={onOpenGlobalSearch}>
-          <span aria-hidden>🔍</span>
-          全局搜索（会话 / 联系人 / 公众号）
-        </button>
         <p className="wx-swipe-hint">向左滑动会话可「标为未读 / 删除」（PRD 4.2）</p>
       </div>
       <div className="wx-list wx-list-swipe" role="list">

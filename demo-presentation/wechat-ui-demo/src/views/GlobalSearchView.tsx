@@ -19,6 +19,7 @@ const OA_STUBS = [
 export function GlobalSearchView({ threads, onClose, onOpenChat }: GlobalSearchViewProps) {
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<SearchTab>("all");
+  const [focused, setFocused] = useState(false);
 
   const allContacts = useMemo(
     () => contactGroups.flatMap((g) => g.items.map((c) => ({ ...c, letter: g.letter }))),
@@ -26,25 +27,28 @@ export function GlobalSearchView({ threads, onClose, onOpenChat }: GlobalSearchV
   );
 
   const needle = q.trim().toLowerCase();
+  const hasQuery = needle.length > 0;
 
   const filteredChats = useMemo(() => {
-    if (!needle) return threads.slice(0, 6);
+    if (!needle) return [];
     return threads.filter((t) => t.name.toLowerCase().includes(needle) || t.lastMessage.toLowerCase().includes(needle));
   }, [threads, needle]);
 
   const filteredContacts = useMemo(() => {
-    if (!needle) return allContacts.slice(0, 8);
+    if (!needle) return [];
     return allContacts.filter((c) => c.name.toLowerCase().includes(needle));
   }, [allContacts, needle]);
 
   const filteredOa = useMemo(() => {
-    if (!needle) return OA_STUBS;
+    if (!needle) return [];
     return OA_STUBS.filter((o) => o.name.toLowerCase().includes(needle) || o.hint.toLowerCase().includes(needle));
   }, [needle]);
 
   const showChats = tab === "all" || tab === "chats";
   const showContacts = tab === "all" || tab === "contacts";
   const showOa = tab === "all" || tab === "oa";
+
+  const searchHints = ["产品讨论组", "妈妈", "微信团队", "文件传输助手"];
 
   return (
     <div className="wx-global-search">
@@ -63,11 +67,25 @@ export function GlobalSearchView({ threads, onClose, onOpenChat }: GlobalSearchV
             className="wx-search-input"
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
             placeholder="搜索会话、联系人、公众号…"
             autoFocus
             aria-label="全局搜索"
           />
         </label>
+        {!hasQuery && focused ? (
+          <div className="wx-global-search-inline-hints" aria-live="polite">
+            <span className="wx-global-search-inline-title">推荐搜索</span>
+            <div className="wx-global-search-inline-list">
+              {searchHints.map((item) => (
+                <button key={item} type="button" className="wx-global-search-inline-chip" onMouseDown={() => setQ(item)}>
+                  🔍 {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
         <div className="wx-global-search-tabs" role="tablist">
           {(
             [
@@ -91,7 +109,7 @@ export function GlobalSearchView({ threads, onClose, onOpenChat }: GlobalSearchV
         </div>
       </div>
       <div className="wx-list wx-global-search-results">
-        {showChats && filteredChats.length > 0 ? (
+        {hasQuery && showChats && filteredChats.length > 0 ? (
           <section className="wx-global-search-section">
             <div className="wx-section-title">会话</div>
             {filteredChats.map((t) => (
@@ -115,7 +133,7 @@ export function GlobalSearchView({ threads, onClose, onOpenChat }: GlobalSearchV
             ))}
           </section>
         ) : null}
-        {showContacts && filteredContacts.length > 0 ? (
+        {hasQuery && showContacts && filteredContacts.length > 0 ? (
           <section className="wx-global-search-section">
             <div className="wx-section-title">联系人</div>
             {filteredContacts.map((c) => (
@@ -131,7 +149,7 @@ export function GlobalSearchView({ threads, onClose, onOpenChat }: GlobalSearchV
             ))}
           </section>
         ) : null}
-        {showOa && filteredOa.length > 0 ? (
+        {hasQuery && showOa && filteredOa.length > 0 ? (
           <section className="wx-global-search-section">
             <div className="wx-section-title">公众号（演示）</div>
             {filteredOa.map((o) => (
@@ -147,7 +165,7 @@ export function GlobalSearchView({ threads, onClose, onOpenChat }: GlobalSearchV
             ))}
           </section>
         ) : null}
-        {needle && !filteredChats.length && !filteredContacts.length && !filteredOa.length ? (
+        {hasQuery && !filteredChats.length && !filteredContacts.length && !filteredOa.length ? (
           <p className="wx-empty-hint" style={{ padding: 24 }}>
             无匹配结果（演示数据有限）
           </p>

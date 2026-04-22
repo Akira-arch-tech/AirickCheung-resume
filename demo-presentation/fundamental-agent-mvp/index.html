@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FUNDAMENTAL Agent MVP | 在线演示入口</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: "Source Sans 3", system-ui, -apple-system, "PingFang SC", sans-serif;
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+      line-height: 1.6;
+    }
+    h1 { margin-bottom: 0.5rem; }
+    .back { margin-bottom: 1.25rem; }
+    .back a { color: #2563eb; text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+    .card {
+      border: 1px solid rgba(127, 127, 127, 0.35);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+      background: rgba(127, 127, 127, 0.05);
+    }
+    .links a {
+      display: inline-block;
+      margin-right: 0.8rem;
+      margin-top: 0.4rem;
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
+    }
+    .links a:hover { text-decoration: underline; }
+    code {
+      font-size: 0.9em;
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+      background: rgba(127,127,127,0.18);
+    }
+    ul { padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <p class="back"><a href="../">← 返回作品演示列表</a></p>
+  <h1>FUNDAMENTAL Agent MVP</h1>
+  <p>明星周边定制智能体（2周MVP）：覆盖需求提交、设计建议、工单生成、履约跟踪、客服问答与 requestId 链路追踪。</p>
+
+  <div class="card">
+    <h2>在线演示入口</h2>
+    <p>当前为仓库文档演示入口。正式交互页面上线后将补充到本区。</p>
+    <div class="links">
+      <a href="https://github.com/Akira-arch-tech/FUN.DA.MENTAL" target="_blank" rel="noopener noreferrer">查看产品仓库</a>
+      <a href="https://github.com/Akira-arch-tech/FUN.DA.MENTAL/tree/main/fundamental-agent-mvp/docs/rest" target="_blank" rel="noopener noreferrer">查看 REST 演示脚本</a>
+      <a href="https://github.com/Akira-arch-tech/FUN.DA.MENTAL/blob/main/fundamental-agent-mvp/backend/openapi.yaml" target="_blank" rel="noopener noreferrer">查看 OpenAPI</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>演示链路（最小闭环）</h2>
+    <ul>
+      <li>组织创建：<code>/api/organizations</code></li>
+      <li>需求提交：<code>/api/briefs</code></li>
+      <li>订单创建：<code>/api/orders</code></li>
+      <li>工单生成：<code>/api/workorders</code></li>
+      <li>物流推进：<code>/api/shipments/events</code></li>
+      <li>客服问答：<code>/api/support/ask</code></li>
+      <li>链路追踪：<code>/api/traces/{requestId}</code></li>
+    </ul>
+  </div>
+</body>
+</html>

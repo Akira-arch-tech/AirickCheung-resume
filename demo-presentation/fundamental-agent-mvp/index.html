@@ -3,33 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FUNDAMENTAL Agent MVP | 在线演示入口</title>
+  <title>FUNDAMENTAL Agent MVP | 交互演示</title>
   <style>
-    :root { color-scheme: light dark; }
+    :root {
+      color-scheme: light dark;
+      --accent: #2563eb;
+      --border: rgba(127, 127, 127, 0.35);
+      --card-bg: rgba(127, 127, 127, 0.05);
+    }
     body {
       font-family: "Source Sans 3", system-ui, -apple-system, "PingFang SC", sans-serif;
-      max-width: 52rem;
+      max-width: 64rem;
       margin: 0 auto;
       padding: 2rem 1.25rem 3rem;
       line-height: 1.6;
     }
     h1 { margin-bottom: 0.5rem; }
+    h2 { margin-top: 0; }
     .back { margin-bottom: 1.25rem; }
-    .back a { color: #2563eb; text-decoration: none; }
+    .back a { color: var(--accent); text-decoration: none; }
     .back a:hover { text-decoration: underline; }
     .card {
-      border: 1px solid rgba(127, 127, 127, 0.35);
+      border: 1px solid var(--border);
       border-radius: 10px;
       padding: 1rem 1.2rem;
       margin: 1rem 0;
-      background: rgba(127, 127, 127, 0.05);
+      background: var(--card-bg);
     }
     .links a {
       display: inline-block;
       margin-right: 0.8rem;
       margin-top: 0.4rem;
       text-decoration: none;
-      color: #2563eb;
+      color: var(--accent);
       font-weight: 600;
     }
     .links a:hover { text-decoration: underline; }
@@ -40,16 +46,118 @@
       background: rgba(127,127,127,0.18);
     }
     ul { padding-left: 1.2rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+    .full { grid-column: 1 / -1; }
+    label {
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+    input, textarea, select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.55rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      font: inherit;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: transparent;
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+    }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.8rem;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .status {
+      margin-top: 0.7rem;
+      padding: 0.6rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+    .log {
+      max-height: 300px;
+      overflow: auto;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem;
+      background: rgba(127,127,127,0.1);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.78rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      margin-left: 0.4rem;
+    }
+    .hint {
+      font-size: 0.86rem;
+      opacity: 0.82;
+      margin-top: 0.35rem;
+    }
   </style>
 </head>
 <body>
   <p class="back"><a href="../">← 返回作品演示列表</a></p>
   <h1>FUNDAMENTAL Agent MVP</h1>
-  <p>明星周边定制智能体（2周MVP）：覆盖需求提交、设计建议、工单生成、履约跟踪、客服问答与 requestId 链路追踪。</p>
+  <p>明星周边定制智能体（2周MVP）：覆盖需求提交、工单生成、履约跟踪、客服问答与 requestId 链路追踪。</p>
 
   <div class="card">
-    <h2>在线演示入口</h2>
-    <p>当前为仓库文档演示入口。正式交互页面上线后将补充到本区。</p>
+    <h2>在线演示入口 <span id="modeBadge" class="badge">MOCK 模式</span></h2>
+    <p>你可以直接在页面内走完整闭环（推荐先用 MOCK）。切换到 LIVE 可直连后端 API。</p>
+    <div class="grid">
+      <div>
+        <label>运行模式</label>
+        <select id="modeSelect">
+          <option value="mock">MOCK（线上可直接演示）</option>
+          <option value="live">LIVE API（联调后端）</option>
+        </select>
+      </div>
+      <div>
+        <label>API Base URL（LIVE 时生效）</label>
+        <input id="baseUrlInput" value="http://127.0.0.1:8000" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button id="healthBtn">检查 /health</button>
+      <button id="resetBtn">重置演示数据</button>
+    </div>
+    <div id="globalStatus" class="status">Ready.</div>
     <div class="links">
       <a href="https://github.com/Akira-arch-tech/FUN.DA.MENTAL" target="_blank" rel="noopener noreferrer">查看产品仓库</a>
       <a href="https://github.com/Akira-arch-tech/FUN.DA.MENTAL/tree/main/fundamental-agent-mvp/docs/rest" target="_blank" rel="noopener noreferrer">查看 REST 演示脚本</a>
@@ -58,16 +166,432 @@
   </div>
 
   <div class="card">
-    <h2>演示链路（最小闭环）</h2>
-    <ul>
-      <li>组织创建：<code>/api/organizations</code></li>
-      <li>需求提交：<code>/api/briefs</code></li>
-      <li>订单创建：<code>/api/orders</code></li>
-      <li>工单生成：<code>/api/workorders</code></li>
-      <li>物流推进：<code>/api/shipments/events</code></li>
-      <li>客服问答：<code>/api/support/ask</code></li>
-      <li>链路追踪：<code>/api/traces/{requestId}</code></li>
-    </ul>
+    <h2>交互 Demo（4 个功能区）</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="brief">1) 需求提交</button>
+      <button class="tab-btn" data-tab="order">2) 订单与工单</button>
+      <button class="tab-btn" data-tab="fulfill">3) 履约与客服</button>
+      <button class="tab-btn" data-tab="trace">4) requestId 追踪</button>
+    </div>
+
+    <section id="panel-brief" class="panel active">
+      <div class="grid">
+        <div>
+          <label>组织类型</label>
+          <select id="orgType">
+            <option value="fan_club">粉丝应援会</option>
+            <option value="mcn">MCN</option>
+            <option value="agency">经纪公司</option>
+          </select>
+        </div>
+        <div>
+          <label>组织名称</label>
+          <input id="orgName" value="Demo Fan Club" />
+        </div>
+        <div>
+          <label>市场</label>
+          <select id="market">
+            <option value="JP">JP</option>
+            <option value="KR">KR</option>
+          </select>
+        </div>
+        <div>
+          <label>需求标题</label>
+          <input id="briefTitle" value="应援贴纸定制需求" />
+        </div>
+        <div class="full">
+          <label>需求描述</label>
+          <textarea id="briefRaw">日本应援贴纸，粉色风格，20件，尽快发货。</textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="primary" id="submitBriefBtn">提交需求（自动创建组织+需求）</button>
+      </div>
+      <div id="briefStatus" class="status">等待提交...</div>
+    </section>
+
+    <section id="panel-order" class="panel">
+      <div class="grid">
+        <div>
+          <label>SKU</label>
+          <input id="skuCode" value="STK-3CM" />
+        </div>
+        <div>
+          <label>商品名</label>
+          <input id="productName" value="应援贴纸（演示）" />
+        </div>
+        <div>
+          <label>数量</label>
+          <input id="qty" type="number" value="20" />
+        </div>
+        <div>
+          <label>单价（JPY）</label>
+          <input id="unitPrice" type="number" value="99" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="primary" id="createOrderBtn">创建订单</button>
+        <button id="createWorkorderBtn">生成工单</button>
+      </div>
+      <div id="orderStatus" class="status">等待操作...</div>
+    </section>
+
+    <section id="panel-fulfill" class="panel">
+      <div class="grid">
+        <div>
+          <label>物流事件</label>
+          <select id="eventType">
+            <option value="picked">picked</option>
+            <option value="linehaul" selected>linehaul</option>
+            <option value="arrived">arrived</option>
+            <option value="delivered">delivered</option>
+          </select>
+        </div>
+        <div>
+          <label>运单号</label>
+          <input id="trackingNo" value="JP-DEMO-0001" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button id="pushShipmentBtn">推进物流</button>
+      </div>
+      <div class="grid">
+        <div class="full">
+          <label>客服提问</label>
+          <textarea id="supportQuestion">请问订单目前状态？</textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button id="askSupportBtn">客服问答</button>
+      </div>
+      <div id="fulfillStatus" class="status">等待操作...</div>
+    </section>
+
+    <section id="panel-trace" class="panel">
+      <div class="grid">
+        <div>
+          <label>requestId</label>
+          <input id="traceRequestId" placeholder="例如 req_demo_001" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button id="lookupTraceBtn">查询链路</button>
+      </div>
+      <div id="traceStatus" class="status">等待查询...</div>
+    </section>
   </div>
+
+  <div class="card">
+    <h2>演示日志</h2>
+    <p class="hint">记录本次会话调用的 requestId、接口路径和返回摘要，便于汇报时逐步讲解。</p>
+    <div id="demoLog" class="log"></div>
+  </div>
+
+  <script>
+    const state = {
+      mode: "mock",
+      baseUrl: "http://127.0.0.1:8000",
+      orgId: null,
+      briefId: null,
+      orderId: null,
+      workorderId: null
+    };
+
+    const mockDb = {
+      organizations: {},
+      briefs: {},
+      orders: {},
+      workorders: {},
+      traces: {},
+      supports: {}
+    };
+
+    const el = (id) => document.getElementById(id);
+    const logEl = el("demoLog");
+
+    function uid(prefix) {
+      return `${prefix}_${Math.random().toString(16).slice(2, 10)}`;
+    }
+
+    function reqId(prefix = "req_demo") {
+      return `${prefix}_${Math.random().toString(16).slice(2, 10)}`;
+    }
+
+    function writeStatus(id, value) {
+      el(id).textContent = value;
+    }
+
+    function appendLog(title, data) {
+      const now = new Date().toLocaleTimeString();
+      const line = `[${now}] ${title}\n${JSON.stringify(data, null, 2)}\n\n`;
+      logEl.textContent = line + logEl.textContent;
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      el("modeBadge").textContent = mode === "mock" ? "MOCK 模式" : "LIVE 模式";
+    }
+
+    async function apiFetch(path, method, body, customRequestId) {
+      const requestId = customRequestId || reqId();
+      if (state.mode === "mock") {
+        const result = await mockCall(path, method, body, requestId);
+        return { ...result, requestId };
+      }
+
+      const url = `${state.baseUrl}${path}`;
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          "X-Request-Id": requestId
+        },
+        body: body ? JSON.stringify(body) : undefined
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(`${json.code || "HTTP_ERROR"}: ${json.message || res.statusText} (${json.requestId || requestId})`);
+      }
+      return json;
+    }
+
+    async function mockCall(path, method, body, requestId) {
+      await new Promise((r) => setTimeout(r, 120));
+      if (path === "/health" && method === "GET") {
+        return { status: "ok", service: "fundamental-agent-mvp", requestId };
+      }
+      if (path === "/api/organizations" && method === "POST") {
+        const id = uid("ORG");
+        mockDb.organizations[id] = { id, ...body };
+        return { id, orgType: body.orgType, name: body.name, market: body.market, createdAt: new Date().toISOString(), requestId };
+      }
+      if (path === "/api/briefs" && method === "POST") {
+        const id = uid("BRF");
+        mockDb.briefs[id] = { id, ...body };
+        mockDb.traces[requestId] = { agentRuns: [], supportTickets: [] };
+        return { id, organizationId: body.organizationId, title: body.title, status: "submitted", createdAt: new Date().toISOString(), requestId };
+      }
+      if (path === "/api/orders" && method === "POST") {
+        const id = uid("ORD");
+        const amountTotal = (body.items || []).reduce((sum, it) => sum + Number(it.quantity || 0) * Number(it.unitPrice || 0), 0);
+        mockDb.orders[id] = { id, ...body, amountTotal, status: "draft" };
+        return { id, orderNo: `FND-${Date.now().toString().slice(-6)}`, status: "draft", amountTotal, createdAt: new Date().toISOString(), requestId };
+      }
+      if (path === "/api/workorders" && method === "POST") {
+        const id = uid("WO");
+        mockDb.workorders[id] = { id, ...body };
+        if (mockDb.orders[body.orderId]) mockDb.orders[body.orderId].status = "in_production";
+        return { id, orderId: body.orderId, factoryName: body.factoryName || "mock_factory", status: "accepted", createdAt: new Date().toISOString(), requestId };
+      }
+      if (path === "/api/shipments/events" && method === "POST") {
+        if (!["picked", "linehaul", "arrived", "delivered"].includes(body.eventType)) {
+          throw new Error(`BAD_REQUEST: invalid eventType (${requestId})`);
+        }
+        if (mockDb.orders[body.orderId]) {
+          mockDb.orders[body.orderId].status = body.eventType === "delivered" ? "delivered" : "shipped";
+        }
+        return { id: uid("SHP"), orderId: body.orderId, eventType: body.eventType, eventTime: body.eventTime, trackingNo: body.trackingNo, requestId };
+      }
+      if (path === "/api/support/ask" && method === "POST") {
+        const id = uid("TKT");
+        const ord = mockDb.orders[body.orderId];
+        const answer = ord ? `订单当前状态：${ord.status}` : "已收到你的问题，我们会尽快处理。";
+        mockDb.supports[id] = { id, ...body, answer };
+        if (!mockDb.traces[requestId]) mockDb.traces[requestId] = { agentRuns: [], supportTickets: [] };
+        mockDb.traces[requestId].supportTickets.push({ id, orderId: body.orderId, organizationId: body.organizationId, question: body.question, answer, status: "resolved", createdAt: new Date().toISOString(), resolvedAt: null });
+        return { ticketId: id, answer, source: "agent", requestId };
+      }
+      if (path.startsWith("/api/traces/") && method === "GET") {
+        const queryId = path.replace("/api/traces/", "");
+        const traces = mockDb.traces[queryId] || { agentRuns: [], supportTickets: [] };
+        if (traces.agentRuns.length === 0 && traces.supportTickets.length === 0) {
+          throw new Error(`NOT_FOUND: trace not found (${requestId})`);
+        }
+        return { queryRequestId: queryId, traces, requestId };
+      }
+      if (path.startsWith("/api/orders/") && method === "GET") {
+        const orderId = path.replace("/api/orders/", "");
+        const ord = mockDb.orders[orderId];
+        if (!ord) throw new Error(`NOT_FOUND: order not found (${requestId})`);
+        return { id: orderId, orderNo: `FND-${orderId.slice(-6)}`, status: ord.status, amountTotal: ord.amountTotal || 0, createdAt: new Date().toISOString(), items: ord.items || [], shipmentEvents: [], requestId };
+      }
+      if (path.startsWith("/api/workorders/") && method === "GET") {
+        const wid = path.replace("/api/workorders/", "");
+        const wo = mockDb.workorders[wid];
+        if (!wo) throw new Error(`NOT_FOUND: workorder not found (${requestId})`);
+        return { id: wid, orderId: wo.orderId, factoryName: wo.factoryName || "mock_factory", printFilePath: wo.printFilePath || null, metadata: wo.metadata || {}, status: "accepted", createdAt: new Date().toISOString(), orderSummary: { orderNo: `FND-${wo.orderId?.slice(-6) || "000000"}`, orderStatus: mockDb.orders[wo.orderId]?.status || "draft" }, requestId };
+      }
+      throw new Error(`NOT_IMPLEMENTED: ${method} ${path} (${requestId})`);
+    }
+
+    async function runHealth() {
+      try {
+        const result = await apiFetch("/health", "GET");
+        writeStatus("globalStatus", `健康检查成功: ${JSON.stringify(result, null, 2)}`);
+        appendLog("GET /health", result);
+      } catch (e) {
+        writeStatus("globalStatus", String(e));
+      }
+    }
+
+    async function submitBriefFlow() {
+      try {
+        const orgReq = reqId("req_org");
+        const orgPayload = {
+          orgType: el("orgType").value,
+          name: el("orgName").value,
+          market: el("market").value
+        };
+        const orgRes = await apiFetch("/api/organizations", "POST", orgPayload, orgReq);
+        state.orgId = orgRes.id;
+        appendLog("POST /api/organizations", orgRes);
+
+        const briefReq = reqId("req_brief");
+        const briefPayload = {
+          organizationId: state.orgId,
+          title: el("briefTitle").value,
+          rawRequirement: el("briefRaw").value
+        };
+        const briefRes = await apiFetch("/api/briefs", "POST", briefPayload, briefReq);
+        state.briefId = briefRes.id;
+        appendLog("POST /api/briefs", briefRes);
+        writeStatus("briefStatus", `组织ID: ${state.orgId}\n需求ID: ${state.briefId}\nbrief requestId: ${briefRes.requestId}`);
+        el("traceRequestId").value = briefRes.requestId;
+      } catch (e) {
+        writeStatus("briefStatus", String(e));
+      }
+    }
+
+    async function createOrder() {
+      try {
+        if (!state.briefId) throw new Error("请先在“需求提交”区完成 brief。");
+        const payload = {
+          briefId: state.briefId,
+          currency: "JPY",
+          items: [
+            {
+              skuCode: el("skuCode").value,
+              productName: el("productName").value,
+              quantity: Number(el("qty").value),
+              unitPrice: Number(el("unitPrice").value),
+              spec: { size: "3cm", material: "sticker" }
+            }
+          ],
+          recipientName: "Demo User",
+          shippingCountry: "JP",
+          shippingAddress: "Tokyo"
+        };
+        const orderRes = await apiFetch("/api/orders", "POST", payload, reqId("req_order"));
+        state.orderId = orderRes.id;
+        appendLog("POST /api/orders", orderRes);
+        writeStatus("orderStatus", `订单创建成功\norderId: ${state.orderId}\nrequestId: ${orderRes.requestId}`);
+      } catch (e) {
+        writeStatus("orderStatus", String(e));
+      }
+    }
+
+    async function createWorkorder() {
+      try {
+        if (!state.orderId) throw new Error("请先创建订单。");
+        const payload = {
+          orderId: state.orderId,
+          factoryName: "mock_factory",
+          printFilePath: "/tmp/demo-print.png",
+          metadata: { batch: "DEMO-001", market: "JP" }
+        };
+        const woRes = await apiFetch("/api/workorders", "POST", payload, reqId("req_workorder"));
+        state.workorderId = woRes.id;
+        appendLog("POST /api/workorders", woRes);
+        writeStatus("orderStatus", `工单生成成功\nworkorderId: ${state.workorderId}\nrequestId: ${woRes.requestId}`);
+      } catch (e) {
+        writeStatus("orderStatus", String(e));
+      }
+    }
+
+    async function pushShipment() {
+      try {
+        if (!state.orderId) throw new Error("请先创建订单。");
+        const payload = {
+          orderId: state.orderId,
+          trackingNo: el("trackingNo").value,
+          carrier: "mock_carrier",
+          eventType: el("eventType").value,
+          eventTime: new Date().toISOString(),
+          location: "Tokyo Hub"
+        };
+        const shipRes = await apiFetch("/api/shipments/events", "POST", payload, reqId("req_ship"));
+        appendLog("POST /api/shipments/events", shipRes);
+        writeStatus("fulfillStatus", `物流事件已写入\neventType: ${shipRes.eventType}\nrequestId: ${shipRes.requestId}`);
+      } catch (e) {
+        writeStatus("fulfillStatus", String(e));
+      }
+    }
+
+    async function askSupport() {
+      try {
+        if (!state.orgId) throw new Error("请先创建组织与需求。");
+        const payload = {
+          orderId: state.orderId,
+          organizationId: state.orgId,
+          question: el("supportQuestion").value
+        };
+        const supportReqId = reqId("req_support");
+        const supRes = await apiFetch("/api/support/ask", "POST", payload, supportReqId);
+        appendLog("POST /api/support/ask", supRes);
+        writeStatus("fulfillStatus", `客服回复：${supRes.answer}\nrequestId: ${supRes.requestId}`);
+        el("traceRequestId").value = supRes.requestId;
+      } catch (e) {
+        writeStatus("fulfillStatus", String(e));
+      }
+    }
+
+    async function lookupTrace() {
+      try {
+        const id = el("traceRequestId").value.trim();
+        if (!id) throw new Error("请先输入 requestId。");
+        const traceRes = await apiFetch(`/api/traces/${id}`, "GET");
+        appendLog(`GET /api/traces/${id}`, traceRes);
+        writeStatus("traceStatus", JSON.stringify(traceRes, null, 2));
+      } catch (e) {
+        writeStatus("traceStatus", String(e));
+      }
+    }
+
+    function resetDemo() {
+      state.orgId = null;
+      state.briefId = null;
+      state.orderId = null;
+      state.workorderId = null;
+      writeStatus("globalStatus", "演示状态已重置。");
+      writeStatus("briefStatus", "等待提交...");
+      writeStatus("orderStatus", "等待操作...");
+      writeStatus("fulfillStatus", "等待操作...");
+      writeStatus("traceStatus", "等待查询...");
+      logEl.textContent = "";
+      el("traceRequestId").value = "";
+    }
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        el(`panel-${btn.dataset.tab}`).classList.add("active");
+      });
+    });
+
+    el("modeSelect").addEventListener("change", (e) => setMode(e.target.value));
+    el("baseUrlInput").addEventListener("input", (e) => { state.baseUrl = e.target.value.trim(); });
+    el("healthBtn").addEventListener("click", runHealth);
+    el("resetBtn").addEventListener("click", resetDemo);
+    el("submitBriefBtn").addEventListener("click", submitBriefFlow);
+    el("createOrderBtn").addEventListener("click", createOrder);
+    el("createWorkorderBtn").addEventListener("click", createWorkorder);
+    el("pushShipmentBtn").addEventListener("click", pushShipment);
+    el("askSupportBtn").addEventListener("click", askSupport);
+    el("lookupTraceBtn").addEventListener("click", lookupTrace);
+
+    resetDemo();
+  </script>
 </body>
 </html>

@@ -38,8 +38,10 @@ jobs:
       - name: Assemble site (resume root + demos)
         run: |
           mkdir -p _site/demo-presentation/wechat-ui-demo
+          mkdir -p _site/demo-presentation/fundamental-agent-mvp
           cp index.html styles.css _site/
           cp demo-presentation/index.html _site/demo-presentation/index.html
+          cp demo-presentation/fundamental-agent-mvp/index.html _site/demo-presentation/fundamental-agent-mvp/index.html
           cp -r demo-presentation/wechat-ui-demo/dist/. _site/demo-presentation/wechat-ui-demo/
 
       - uses: actions/upload-pages-artifact@v3

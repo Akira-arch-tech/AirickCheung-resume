@@ -8,8 +8,6 @@
 |------|------|--------------------------|
 | [wechat-ui-demo](./wechat-ui-demo/) | 微信风格 UI，React + Vite | `/demo-presentation/wechat-ui-demo/` |
 | weichat-clone | 微信克隆项目演示（Render 在线后端版） | `https://weichat-clone-demo.onrender.com` |
-| fundamental-custom-design-demo | 定制品设计网站 Demo（独立仓库） | `https://akira-arch-tech.github.io/PM-demo-presentation/` |
-| [fundamental-agent-mvp](./fundamental-agent-mvp/) | 明星周边定制智能体 MVP（需求->设计->工单->履约->客服） | `/demo-presentation/fundamental-agent-mvp/` |
 
 根简历地址：`https://akira-arch-tech.github.io/AirickCheung-resume/`  
 演示索引页：`https://akira-arch-tech.github.io/AirickCheung-resume/demo-presentation/`

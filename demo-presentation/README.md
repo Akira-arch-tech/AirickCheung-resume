@@ -6,7 +6,9 @@
 
 | 目录 | 说明 | 线上路径（GitHub Pages） |
 |------|------|--------------------------|
+| [flexible-supply-chain-ai-pm](./flexible-supply-chain-ai-pm/) | 柔性定制供应链 AI PM 能力练习（口述 / 人在环 / 主流程） | `/demo-presentation/flexible-supply-chain-ai-pm/` |
 | [wechat-ui-demo](./wechat-ui-demo/) | 微信风格 UI，React + Vite | `/demo-presentation/wechat-ui-demo/` |
+| [fundamental-agent-mvp](./fundamental-agent-mvp/) | FUNDAMENTAL Agent MVP 交互演示 | `/demo-presentation/fundamental-agent-mvp/` |
 | weichat-clone | 微信克隆项目演示（Render 在线后端版） | `https://weichat-clone-demo.onrender.com` |
 
 根简历地址：`https://akira-arch-tech.github.io/AirickCheung-resume/`  

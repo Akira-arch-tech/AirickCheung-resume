@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JuJuBit 柔性履约工作台 | 供应链难题解法</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #18201e;
+      --muted: #5c6b66;
+      --line: #c9d5cf;
+      --paper: #f2f5f3;
+      --surface: #fff;
+      --accent: #0c5c52;
+      --accent-soft: #d5efe9;
+      --warn: #8a5a12;
+      --warn-soft: #f3e6cf;
+      --danger: #8a2f2f;
+      --danger-soft: #f2d8d8;
+      --ok: #1d6a38;
+      --font: "IBM Plex Sans", "PingFang SC", sans-serif;
+      --display: "Fraunces", "Songti SC", serif;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 420px at 0% -5%, #dceee9 0%, transparent 55%),
+        radial-gradient(800px 360px at 100% 0%, #ebe6dc 0%, transparent 50%),
+        var(--paper);
+      line-height: 1.55;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 74rem; margin: 0 auto; padding: 1.35rem 1.15rem 3rem; }
+    .back { margin-bottom: 0.85rem; font-size: 0.92rem; }
+    .back a { text-decoration: none; }
+    .eyebrow { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    h1 { font-family: var(--display); font-size: clamp(1.55rem, 3vw, 2.05rem); margin: 0.25rem 0 0.45rem; line-height: 1.2; }
+    .lede { margin: 0; max-width: 48rem; color: var(--muted); }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin: 1.1rem 0 1.2rem;
+    }
+    .metric {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.8rem 0.9rem;
+    }
+    .metric .l { font-size: 0.76rem; color: var(--muted); }
+    .metric .v { font-family: var(--display); font-size: 1.35rem; font-weight: 700; margin-top: 0.1rem; }
+    .metric .h { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.85rem; }
+    .tab-btn, button {
+      font: inherit; cursor: pointer;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 0.42rem 0.85rem;
+      color: var(--ink);
+    }
+    .tab-btn.active, button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.ghost { background: transparent; }
+    button.warn { background: var(--warn-soft); border-color: #dfc08a; color: var(--warn); }
+    button.danger { background: var(--danger-soft); border-color: #deb0b0; color: var(--danger); }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.8rem;
+    }
+    .card h2, .card h3 { font-family: var(--display); margin: 0 0 0.5rem; }
+    .card h2 { font-size: 1.15rem; }
+    .card h3 { font-size: 1.02rem; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 0.75rem; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; }
+    .pain {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.8rem;
+      background: #fafbfa;
+    }
+    .pain .tag { font-size: 0.72rem; font-weight: 600; color: var(--danger); margin-bottom: 0.25rem; }
+    .pain strong { display: block; margin-bottom: 0.25rem; }
+    .pain p { margin: 0; font-size: 0.86rem; color: var(--muted); }
+
+    .flow {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0.6rem 0;
+    }
+    .flow .node {
+      padding: 0.35rem 0.65rem; border-radius: 8px;
+      border: 1px solid var(--line); font-size: 0.82rem; background: #fff;
+    }
+    .flow .node.hot { background: var(--warn-soft); border-color: #dfc08a; color: var(--warn); font-weight: 600; }
+    .flow .node.ai { background: var(--accent-soft); border-color: #9ecfc3; color: var(--accent); font-weight: 600; }
+    .flow .arrow { color: var(--muted); font-size: 0.8rem; }
+
+    label.f { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.22rem; }
+    input, select, textarea {
+      width: 100%; font: inherit; padding: 0.5rem 0.65rem;
+      border-radius: 8px; border: 1px solid var(--line); background: #fff;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+
+    .box-ai { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; padding: 0.75rem 0.9rem; margin: 0.55rem 0; }
+    .box-human { border-left: 3px solid var(--warn); background: var(--warn-soft); border-radius: 0 10px 10px 0; padding: 0.75rem 0.9rem; margin: 0.55rem 0; }
+    .box-fail { border-left: 3px solid var(--danger); background: var(--danger-soft); border-radius: 0 10px 10px 0; padding: 0.75rem 0.9rem; margin: 0.55rem 0; }
+
+    .kv { display: grid; grid-template-columns: 7.2rem 1fr; gap: 0.3rem 0.55rem; font-size: 0.9rem; }
+    .kv span:nth-child(odd) { color: var(--muted); }
+
+    .status {
+      margin-top: 0.65rem; padding: 0.65rem 0.8rem; border-radius: 8px;
+      border: 1px solid var(--line); background: #fafbfa; font-size: 0.9rem; white-space: pre-wrap;
+    }
+    .log {
+      max-height: 200px; overflow: auto; font-size: 0.82rem;
+      border: 1px solid var(--line); border-radius: 8px; padding: 0.55rem 0.7rem; background: #f7faf8;
+    }
+    .log div { padding: 0.18rem 0; border-bottom: 1px solid #e4ebe7; }
+    .log div:last-child { border-bottom: 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    th, td { text-align: left; padding: 0.48rem 0.4rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 0.75rem; font-weight: 600; }
+    tr.selected { background: var(--accent-soft); }
+    tr.clickable { cursor: pointer; }
+    tr.clickable:hover { background: #f0f7f4; }
+
+    .pill {
+      display: inline-block; font-size: 0.7rem; font-weight: 600;
+      padding: 0.1rem 0.42rem; border-radius: 999px; border: 1px solid var(--line);
+    }
+    .pill.ok { background: #dff0e5; color: var(--ok); border-color: #b5d8c1; }
+    .pill.warn { background: var(--warn-soft); color: var(--warn); border-color: #dfc08a; }
+    .pill.danger { background: var(--danger-soft); color: var(--danger); border-color: #deb0b0; }
+    .pill.muted { background: #eee; color: var(--muted); }
+
+    .queue-bar {
+      height: 10px; border-radius: 999px; background: #e5ece8; overflow: hidden; margin-top: 0.35rem;
+    }
+    .queue-bar > span { display: block; height: 100%; background: var(--accent); }
+
+    .footer-note { margin-top: 1.1rem; font-size: 0.8rem; color: var(--muted); }
+
+    @media (max-width: 860px) {
+      .metrics, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .kv { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="back"><a href="../">← 返回作品演示列表</a></p>
+
+    <div class="eyebrow">JuJuBit · Tripo AIGC 3D · 跨境柔性定制履约</div>
+    <h1>柔性定制供应链难题：履约工作台解法</h1>
+    <p class="lede">
+      公开链路是：下单 → 人工精修建模（3–5 天）→ 3D 打印（5–7 天）→ 出货清关。
+      AI 预览约 2 分钟，但稀缺产能在「建模师 + 打印机」。本 Demo 用进单质检、产能感知 ETA、队列分诊、开印前人审，把承诺交期和返工率压住。
+    </p>
+
+    <div class="metrics" id="metrics" aria-live="polite">
+      <div class="metric">
+        <div class="l">主指标：准时开印率</div>
+        <div class="v" id="mOnTime">—</div>
+        <div class="h">目标 ≥ 90%（相对承诺建模完成日）</div>
+      </div>
+      <div class="metric">
+        <div class="l">返工风险拦截率</div>
+        <div class="v" id="mBlock">0%</div>
+        <div class="h">高风险单被挡回补图 / 未直接进队</div>
+      </div>
+      <div class="metric">
+        <div class="l">建模队列负荷</div>
+        <div class="v" id="mLoad">—</div>
+        <div class="h">进行中 + 等待 / 日产能</div>
+      </div>
+      <div class="metric">
+        <div class="l">本轮处理单数</div>
+        <div class="v" id="mDone">0</div>
+        <div class="h">完成「确认开印」计 1</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="problem" type="button">1) 难题诊断</button>
+      <button class="tab-btn" data-tab="intake" type="button">2) 进单质检</button>
+      <button class="tab-btn" data-tab="queue" type="button">3) 产能与队列</button>
+      <button class="tab-btn" data-tab="approve" type="button">4) 开印人审</button>
+    </div>
+
+    <!-- TAB 1 -->
+    <section id="panel-problem" class="panel active">
+      <div class="card">
+        <h2>JuJuBit 真实履约链路（公开 FAQ）</h2>
+        <div class="flow">
+          <span class="node">下单</span><span class="arrow">→</span>
+          <span class="node ai">AI 预览 ~2min</span><span class="arrow">→</span>
+          <span class="node hot">人工精修 3–5d</span><span class="arrow">→</span>
+          <span class="node hot">3D 打印 5–7d</span><span class="arrow">→</span>
+          <span class="node">在途</span><span class="arrow">→</span>
+          <span class="node">清关</span><span class="arrow">→</span>
+          <span class="node">签收</span>
+        </div>
+        <p class="sub">付费方：C 端买家买「像我的人偶」；B 端批发买「活动前必达的批量定制」。价值链上真正稀缺的是建模师工时与打印机档期，不是再多一个生成模型。</p>
+      </div>
+
+      <div class="card">
+        <h2>五道卡钱的地方</h2>
+        <div class="grid-3" id="painGrid"></div>
+      </div>
+
+      <div class="card">
+        <h2>产品解法怎么切（只碰高杠杆）</h2>
+        <table>
+          <thead>
+            <tr><th>步骤</th><th>谁负责</th><th>AI 做什么</th><th>人留在哪</th><th>错了会怎样</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>进单质检</td>
+              <td>买家补图 / 客服</td>
+              <td>照片清晰度、遮挡、风格可做性评分</td>
+              <td>低分强制补图；版权风险人工看</td>
+              <td>烂图进队 → 精修爆工时 + 返工</td>
+            </tr>
+            <tr>
+              <td>产能 ETA</td>
+              <td>履约系统</td>
+              <td>按建模队列 + 打印负荷算可承诺日</td>
+              <td>加急/批发截单需人批</td>
+              <td>固定喊 8–12 天 → 旺季违约差评</td>
+            </tr>
+            <tr>
+              <td>队列分诊</td>
+              <td>建模组长</td>
+              <td>按 SLA 风险、返工风险、截单日排序</td>
+              <td>改优先级、拆批发单</td>
+              <td>先到先做 → 临期单爆仓</td>
+            </tr>
+            <tr>
+              <td>开印人审</td>
+              <td>建模师</td>
+              <td>提示与预览差异 / 可打印风险</td>
+              <td>确认开印才锁产能；驳回回退精修</td>
+              <td>自动开印 → 废片与客诉</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2 -->
+    <section id="panel-intake" class="panel">
+      <div class="card">
+        <h2>进单质检（把烂单挡在建模队外）</h2>
+        <p class="sub">模拟买家刚下单：系统先打分。高风险默认「补图」，不进建模队列。主指标相关：返工风险拦截率。</p>
+        <div class="grid-2">
+          <div>
+            <label class="f">选择进单样本</label>
+            <select id="intakeSelect"></select>
+            <label class="f" style="margin-top:0.5rem">参考图备注（可改）</label>
+            <textarea id="intakeNote"></textarea>
+            <div class="btn-row">
+              <button type="button" class="primary" id="scoreBtn">AI 质检打分</button>
+              <button type="button" id="acceptQueueBtn" disabled>放行进建模队</button>
+              <button type="button" class="warn" id="blockBtn" disabled>挡回补图</button>
+            </div>
+            <div class="status" id="intakeStatus">选样本后点「AI 质检打分」。</div>
+          </div>
+          <div>
+            <div class="box-ai">
+              <strong>AI 质检结果</strong>
+              <div class="kv" id="scoreKv" style="margin-top:0.45rem">
+                <span>状态</span><span>未评分</span>
+              </div>
+            </div>
+            <div class="box-fail">
+              <strong>若跳过质检会怎样</strong>
+              <p class="sub" style="margin:0.3rem 0 0" id="skipFail">侧面糊、脸被挡的图直接进精修，建模师反复要图，队列被无效单占满。</p>
+            </div>
+            <div class="box-human">
+              <strong>人留在哪</strong>
+              <p class="sub" style="margin:0.3rem 0 0">版权/IP 争议、批发特殊工艺、买家坚持「就这张」——客服或建模组长可强制放行并记原因。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3 -->
+    <section id="panel-queue" class="panel">
+      <div class="card">
+        <h2>产能感知 ETA + 建模队列分诊</h2>
+        <p class="sub">日建模产能默认 8 单；打印机负荷影响开印后段。点队列行可选中，再「按风险重排」或「刷新可承诺 ETA」。</p>
+        <div class="grid-2">
+          <div>
+            <label class="f">今日建模产能（单）</label>
+            <input id="capacityInput" type="number" min="1" max="30" value="8" />
+            <label class="f" style="margin-top:0.5rem">打印机负荷 %</label>
+            <input id="printLoadInput" type="number" min="0" max="100" value="72" />
+            <div class="btn-row">
+              <button type="button" class="primary" id="recalcEtaBtn">刷新可承诺 ETA</button>
+              <button type="button" id="resortBtn">按 SLA/风险重排</button>
+            </div>
+            <div style="margin-top:0.75rem">
+              <div class="l" style="font-size:0.8rem;color:var(--muted)">队列负荷</div>
+              <div class="queue-bar"><span id="loadBar" style="width:0%"></span></div>
+              <div class="sub" id="loadText" style="margin-top:0.35rem"></div>
+            </div>
+            <div class="status" id="queueStatus">调整产能后刷新 ETA。</div>
+          </div>
+          <div>
+            <h3>建模队列</h3>
+            <div style="overflow:auto">
+              <table>
+                <thead>
+                  <tr>
+                    <th>单号</th><th>类型</th><th>风险</th><th>承诺建模日</th><th>优先分</th>
+                  </tr>
+                </thead>
+                <tbody id="queueBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4 -->
+    <section id="panel-approve" class="panel">
+      <div class="card">
+        <h2>开印前人审（AI 建议 ≠ 开印承诺）</h2>
+        <p class="sub">建模师看完精修稿：确认开印锁打印机档期；或驳回回退精修。禁止「预览好看就自动开印」。</p>
+        <div class="grid-2">
+          <div>
+            <label class="f">选择待开印单</label>
+            <select id="approveSelect"></select>
+            <div class="box-ai" style="margin-top:0.65rem">
+              <strong>系统提示</strong>
+              <div class="kv" id="approveKv" style="margin-top:0.4rem"></div>
+            </div>
+            <label class="f">驳回原因（驳回必填）</label>
+            <input id="rejectReason" placeholder="例如：发丝穿模未修，需回精修 0.5 天" />
+            <div class="btn-row">
+              <button type="button" class="primary" id="printBtn">确认开印</button>
+              <button type="button" class="danger" id="rejectPrintBtn">驳回回退精修</button>
+              <button type="button" class="ghost" id="resetDemoBtn">重置演示数据</button>
+            </div>
+            <div class="status" id="approveStatus">选中一单后决策。</div>
+          </div>
+          <div>
+            <h3>决策与履约日志</h3>
+            <div class="log" id="eventLog"></div>
+            <h3 style="margin-top:0.85rem">本单结果</h3>
+            <div class="kv" id="orderResult">
+              <span>状态</span><span>等待人审</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>最小商业化验证（写进试点）</h3>
+        <div class="grid-3">
+          <div class="pain" style="cursor:default">
+            <div class="tag" style="color:var(--accent)">付费方</div>
+            <strong>JuJuBit 履约团队 / 平台</strong>
+            <p>买的是更少返工、更准交期，不是「再炫一个生成效果」。</p>
+          </div>
+          <div class="pain" style="cursor:default">
+            <div class="tag" style="color:var(--accent)">主指标</div>
+            <strong>准时开印率 ≥ 90%</strong>
+            <p>辅：返工风险拦截率、建模等待时长、开印驳回原因分布。</p>
+          </div>
+          <div class="pain" style="cursor:default">
+            <div class="tag" style="color:var(--accent)">复利飞轮</div>
+            <strong>质检规则 + 历史废片</strong>
+            <p>每拦下一单烂图、每记一次驳回原因，下一单评分更准。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      语境：VAST/Tripo 生成能力接入 JuJuBit 柔性定制履约。Demo 为前端模拟，数据不连真实订单。
+      路径：<code>/demo-presentation/jujubit-fulfillment-ops/</code>
+    </p>
+  </div>
+
+  <script>
+    const PAINS = [
+      {
+        tag: "瓶颈 1",
+        title: "人工精修才是稀缺位",
+        text: "AI 预览 2 分钟，精修仍要 3–5 天。队列一堵，对外固定 8–12 天就会穿帮。"
+      },
+      {
+        tag: "瓶颈 2",
+        title: "进单质量不稳定",
+        text: "糊图、遮挡、多人或版权图进队，精修反复要图，等于用产能做无效工。"
+      },
+      {
+        tag: "瓶颈 3",
+        title: "承诺不看产能",
+        text: "FAQ 口径整齐，但建模产能与打印机负荷是波动的；批发截单更不能拍脑袋。"
+      },
+      {
+        tag: "瓶颈 4",
+        title: "预览 ≠ 可打印",
+        text: "买家确认的是屏幕预览；开印前若不做人审，穿模/薄壁直接变废片与重做。"
+      },
+      {
+        tag: "瓶颈 5",
+        title: "定制难退换",
+        text: "个性化商品几乎不退款。问题必须前移到进单与开印门禁，而不是售后硬刚。"
+      },
+      {
+        tag: "瓶颈 6",
+        title: "批发混单更复杂",
+        text: "同款批量 vs 每人一脸；一单多件要拆成可排产工单，否则截单日必炸。"
+      }
+    ];
+
+    const INTAKE_SAMPLES = [
+      {
+        id: "S1",
+        label: "清晰正脸自拍 · Soft Chibi 6cm",
+        note: "正面光线足，五官清晰，单人，无遮挡。",
+        score: 92,
+        issues: ["无明显遮挡", "分辨率足够"],
+        risk: "low",
+        skipFail: "此单质量好；跳过质检影响不大，但仍建议记入规则样本。"
+      },
+      {
+        id: "S2",
+        label: "侧脸糊图 · Anime 1:7 10cm",
+        note: "夜间侧脸，运动模糊，刘海遮眼。",
+        score: 38,
+        issues: ["运动模糊", "五官遮挡", "大尺寸对细节要求更高"],
+        risk: "high",
+        skipFail: "直接进精修会反复要图，单均精修工时可能翻倍，拖垮当日产能。"
+      },
+      {
+        id: "S3",
+        label: "双人合影要拆成两人偶 · 批发意向",
+        note: "合影两张脸，客户要两件；活动日前 18 天要到美东。",
+        score: 71,
+        issues: ["需拆成 2 个建模工单", "截单日紧", "建议确认每人单独参考图"],
+        risk: "mid",
+        skipFail: "当一件做，打印后客诉「少一个人」；或截单前才发现要拆单。"
+      },
+      {
+        id: "S4",
+        label: "疑似版权角色草图",
+        note: "用户上传二次元知名角色线稿，要求高度还原。",
+        score: 55,
+        issues: ["版权/IP 风险", "需法务或客服确认授权"],
+        risk: "high",
+        skipFail: "未审版权就建模打印，平台可能面临下架与投诉。"
+      }
+    ];
+
+    function daysFromNow(n) {
+      const d = new Date();
+      d.setDate(d.getDate() + n);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function seedQueue() {
+      return [
+        { id: "JB-24018", type: "C端·Chibi", risk: "low", photo: 90, slaDays: 3, wholesale: false, blocked: false, status: "queued" },
+        { id: "JB-24021", type: "C端·Anime", risk: "high", photo: 40, slaDays: 4, wholesale: false, blocked: false, status: "queued" },
+        { id: "JB-24022", type: "批发·同款×80", risk: "mid", photo: 85, slaDays: 2, wholesale: true, blocked: false, status: "queued" },
+        { id: "JB-24025", type: "C端·Pet", risk: "low", photo: 88, slaDays: 5, wholesale: false, blocked: false, status: "queued" },
+        { id: "JB-24027", type: "批发·每人一脸×50", risk: "mid", photo: 76, slaDays: 1, wholesale: true, blocked: false, status: "queued" },
+        { id: "JB-24029", type: "C端·FreeStyle", risk: "high", photo: 45, slaDays: 3, wholesale: false, blocked: false, status: "queued" }
+      ].map((o) => ({
+        ...o,
+        promiseDate: daysFromNow(o.slaDays),
+        priority: 0,
+        printReady: o.risk !== "high" && o.photo >= 70
+      }));
+    }
+
+    const state = {
+      tab: "problem",
+      intakeId: "S1",
+      lastScore: null,
+      blockedCount: 0,
+      scoredHighRisk: 0,
+      queue: seedQueue(),
+      selectedQueueId: null,
+      approveId: null,
+      printed: 0,
+      onTimeHits: 0,
+      onTimeTotal: 0,
+      events: []
+    };
+
+    function $(id) { return document.getElementById(id); }
+
+    function log(msg) {
+      const ts = new Date().toLocaleTimeString();
+      state.events.unshift(`[${ts}] ${msg}`);
+      $("eventLog").innerHTML = state.events.slice(0, 40).map((x) => `<div>${x}</div>`).join("");
+    }
+
+    function riskPill(r) {
+      const cls = r === "high" ? "danger" : r === "mid" ? "warn" : "ok";
+      const t = r === "high" ? "高" : r === "mid" ? "中" : "低";
+      return `<span class="pill ${cls}">${t}</span>`;
+    }
+
+    function switchTab(tab) {
+      state.tab = tab;
+      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+      document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === "panel-" + tab));
+      if (tab === "queue") renderQueue();
+      if (tab === "approve") renderApproveSelect();
+    }
+
+    function renderPains() {
+      $("painGrid").innerHTML = PAINS.map((p) => `
+        <div class="pain">
+          <div class="tag">${p.tag}</div>
+          <strong>${p.title}</strong>
+          <p>${p.text}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderIntakeSelect() {
+      $("intakeSelect").innerHTML = INTAKE_SAMPLES.map((s) =>
+        `<option value="${s.id}">${s.id} · ${s.label}</option>`
+      ).join("");
+      onIntakeChange();
+    }
+
+    function onIntakeChange() {
+      state.intakeId = $("intakeSelect").value;
+      const s = INTAKE_SAMPLES.find((x) => x.id === state.intakeId);
+      $("intakeNote").value = s.note;
+      state.lastScore = null;
+      $("acceptQueueBtn").disabled = true;
+      $("blockBtn").disabled = true;
+      $("scoreKv").innerHTML = `<span>状态</span><span>未评分</span>`;
+      $("skipFail").textContent = s.skipFail;
+      $("intakeStatus").textContent = "已载入样本。点「AI 质检打分」。";
+    }
+
+    function scoreIntake() {
+      const s = INTAKE_SAMPLES.find((x) => x.id === state.intakeId);
+      state.lastScore = s;
+      if (s.risk === "high") state.scoredHighRisk += 1;
+      const rec = s.risk === "high" ? "建议挡回补图 / 人工审版权" : s.risk === "mid" ? "可有条件放行（拆单或补图）" : "可放行进建模队";
+      $("scoreKv").innerHTML = `
+        <span>质检分</span><span>${s.score}/100</span>
+        <span>返工风险</span><span>${riskPill(s.risk)}</span>
+        <span>问题点</span><span>${s.issues.join("；")}</span>
+        <span>系统建议</span><span>${rec}</span>
+      `;
+      $("acceptQueueBtn").disabled = false;
+      $("blockBtn").disabled = false;
+      $("intakeStatus").textContent = `已评分 ${s.score}。高风险请优先「挡回补图」。`;
+      log(`质检 ${s.id}：分 ${s.score}，风险 ${s.risk}`);
+      updateMetrics();
+    }
+
+    function acceptToQueue() {
+      const s = state.lastScore || INTAKE_SAMPLES.find((x) => x.id === state.intakeId);
+      if (s.risk === "high") {
+        $("intakeStatus").textContent = "高风险单强制放行需组长确认。演示：已记强制放行，并带高风险标签进队。";
+      }
+      const id = "JB-N" + String(200 + state.queue.length);
+      state.queue.push({
+        id,
+        type: "新进·" + s.label.split("·")[0],
+        risk: s.risk,
+        photo: s.score,
+        slaDays: s.risk === "high" ? 4 : 3,
+        wholesale: s.id === "S3",
+        blocked: false,
+        status: "queued",
+        promiseDate: daysFromNow(s.risk === "high" ? 4 : 3),
+        priority: 0,
+        printReady: s.score >= 70 && s.risk !== "high"
+      });
+      log(`放行进队 ${id}（来自 ${s.id}）`);
+      $("intakeStatus").textContent = `${id} 已进入建模队列。可去「产能与队列」查看。`;
+      updateMetrics();
+      renderQueue();
+      renderApproveSelect();
+    }
+
+    function blockIntake() {
+      const s = state.lastScore || INTAKE_SAMPLES.find((x) => x.id === state.intakeId);
+      if (s.risk === "low") {
+        $("intakeStatus").textContent = "低风险单也可挡回，但通常不必要。已记录一次拦截练习。";
+      } else {
+        $("intakeStatus").textContent = "已挡回补图：不占建模产能。买家补清晰正脸后再评。";
+      }
+      state.blockedCount += 1;
+      log(`挡回补图 ${s.id}（风险 ${s.risk}）`);
+      updateMetrics();
+    }
+
+    function calcPriority(o, capacity, printLoad) {
+      const riskW = o.risk === "high" ? 25 : o.risk === "mid" ? 12 : 0;
+      const slaW = Math.max(0, 40 - o.slaDays * 12);
+      const wh = o.wholesale ? 18 : 0;
+      const photoPenalty = o.photo < 60 ? -20 : 0;
+      const printPenalty = printLoad > 85 ? -5 : 0;
+      const capPenalty = capacity < 6 ? 5 : 0;
+      return Math.round(riskW + slaW + wh + photoPenalty + printPenalty + capPenalty);
+    }
+
+    function resortQueue() {
+      const capacity = Number($("capacityInput").value) || 8;
+      const printLoad = Number($("printLoadInput").value) || 0;
+      state.queue.forEach((o) => {
+        o.priority = calcPriority(o, capacity, printLoad);
+      });
+      state.queue.sort((a, b) => b.priority - a.priority);
+      $("queueStatus").textContent = "已按「截单紧度 + 批发 + 返工风险」重排。高风险低分照片仍排前是为了尽早拦/尽早要图，不是鼓励开印。";
+      log("队列已重排");
+      renderQueue();
+    }
+
+    function recalcEta() {
+      const capacity = Math.max(1, Number($("capacityInput").value) || 8);
+      const printLoad = Number($("printLoadInput").value) || 0;
+      const printExtra = printLoad >= 90 ? 2 : printLoad >= 75 ? 1 : 0;
+      let slot = 0;
+      state.queue.forEach((o) => {
+        if (o.status !== "queued") return;
+        const waitDays = Math.floor(slot / capacity) + 1;
+        const modelDays = o.risk === "high" ? 5 : o.risk === "mid" ? 4 : 3;
+        o.promiseDate = daysFromNow(waitDays + modelDays - 1);
+        o.slaDays = waitDays + modelDays - 1;
+        o.printEtaExtra = printExtra;
+        o.priority = calcPriority(o, capacity, printLoad);
+        slot += o.wholesale && o.type.includes("每人") ? 3 : 1;
+      });
+      $("queueStatus").textContent = `已按产能 ${capacity} 单/日 + 打印负荷 ${printLoad}% 重算承诺建模日` +
+        (printExtra ? `（打印段建议再 +${printExtra} 天对外说明）` : "") + "。";
+      log(`刷新 ETA：产能 ${capacity}，打印负荷 ${printLoad}%`);
+      renderQueue();
+      updateMetrics();
+    }
+
+    function renderQueue() {
+      const capacity = Math.max(1, Number($("capacityInput").value) || 8);
+      const waiting = state.queue.filter((o) => o.status === "queued").length;
+      const loadPct = Math.min(100, Math.round((waiting / capacity) * 100));
+      $("loadBar").style.width = loadPct + "%";
+      $("loadText").textContent = `等待/进行 ${waiting} 单 · 日产能 ${capacity} · 负荷 ${loadPct}%`;
+      $("mLoad").textContent = waiting + "/" + capacity;
+
+      $("queueBody").innerHTML = state.queue.map((o) => `
+        <tr class="clickable ${state.selectedQueueId === o.id ? "selected" : ""}" data-id="${o.id}">
+          <td>${o.id}<br/><span class="pill muted">${o.status === "queued" ? "排队" : o.status === "printing" ? "已开印" : o.status}</span></td>
+          <td>${o.type}</td>
+          <td>${riskPill(o.risk)}</td>
+          <td>${o.promiseDate}${o.printEtaExtra ? `<br/><span class="pill warn">打印+${o.printEtaExtra}d</span>` : ""}</td>
+          <td>${o.priority}</td>
+        </tr>
+      `).join("");
+
+      $("queueBody").querySelectorAll("tr").forEach((tr) => {
+        tr.addEventListener("click", () => {
+          state.selectedQueueId = tr.dataset.id;
+          state.approveId = tr.dataset.id;
+          renderQueue();
+          renderApproveSelect();
+          $("queueStatus").textContent = `已选中 ${tr.dataset.id}，可去「开印人审」。`;
+        });
+      });
+    }
+
+    function renderApproveSelect() {
+      const candidates = state.queue.filter((o) => o.status === "queued");
+      $("approveSelect").innerHTML = candidates.map((o) =>
+        `<option value="${o.id}">${o.id} · ${o.type}</option>`
+      ).join("");
+      if (!candidates.length) {
+        $("approveKv").innerHTML = `<span>状态</span><span>无待开印单</span>`;
+        $("approveStatus").textContent = "队列为空或已全部开印。可重置演示数据。";
+        return;
+      }
+      if (!state.approveId || !candidates.find((c) => c.id === state.approveId)) {
+        state.approveId = candidates[0].id;
+      }
+      $("approveSelect").value = state.approveId;
+      showApproveDetail();
+    }
+
+    function showApproveDetail() {
+      const o = state.queue.find((x) => x.id === state.approveId);
+      if (!o) return;
+      const printable = o.photo >= 70 && o.risk !== "high";
+      $("approveKv").innerHTML = `
+        <span>参考图分</span><span>${o.photo}</span>
+        <span>返工风险</span><span>${riskPill(o.risk)}</span>
+        <span>承诺建模日</span><span>${o.promiseDate}</span>
+        <span>可打印建议</span><span>${printable ? "可提交人审开印" : "建议驳回继续精修/补图"}</span>
+        <span>差异提示</span><span>${o.risk === "high" ? "预览与可打印网格偏差大（薄壁/遮挡）" : "与预览大体一致，检查发丝与底座"}</span>
+      `;
+      $("orderResult").innerHTML = `
+        <span>单号</span><span>${o.id}</span>
+        <span>状态</span><span>${o.status === "queued" ? "待开印人审" : o.status}</span>
+      `;
+    }
+
+    function confirmPrint() {
+      const o = state.queue.find((x) => x.id === $("approveSelect").value);
+      if (!o || o.status !== "queued") {
+        $("approveStatus").textContent = "没有可开印的单。";
+        return;
+      }
+      if (o.risk === "high" || o.photo < 60) {
+        $("approveStatus").textContent = "系统提示高风险。演示允许强制开印，但会记一次「冒险开印」并计准时统计。";
+      }
+      o.status = "printing";
+      state.printed += 1;
+      state.onTimeTotal += 1;
+      // simple on-time: if promiseDate within next 4 days from "today" heuristic using slaDays leftover
+      const onTime = o.slaDays <= 4 || o.priority >= 30;
+      if (onTime) state.onTimeHits += 1;
+      state.approveId = null;
+      log(`确认开印 ${o.id}${onTime ? "（计入准时）" : "（相对承诺偏紧）"}`);
+      $("approveStatus").textContent = `${o.id} 已锁打印档期。买家侧进入「生产中」；取消/改址窗口关闭。`;
+      $("orderResult").innerHTML = `
+        <span>单号</span><span>${o.id}</span>
+        <span>状态</span><span>已开印</span>
+        <span>准时口径</span><span>${onTime ? "命中" : "偏紧"}</span>
+      `;
+      updateMetrics();
+      renderQueue();
+      renderApproveSelect();
+    }
+
+    function rejectPrint() {
+      const o = state.queue.find((x) => x.id === $("approveSelect").value);
+      const reason = $("rejectReason").value.trim();
+      if (!o || o.status !== "queued") {
+        $("approveStatus").textContent = "没有可驳回的单。";
+        return;
+      }
+      if (!reason) {
+        $("approveStatus").textContent = "驳回必须写原因——这是返工数据，也是责任边界。";
+        return;
+      }
+      o.status = "rework";
+      o.risk = "high";
+      o.printReady = false;
+      // put back as queued rework with worse sla
+      o.status = "queued";
+      o.slaDays += 1;
+      o.promiseDate = daysFromNow(o.slaDays);
+      log(`开印驳回 ${o.id}：${reason} → 回退精修`);
+      $("approveStatus").textContent = `${o.id} 已回退精修，不锁打印机。`;
+      $("rejectReason").value = "";
+      $("orderResult").innerHTML = `
+        <span>单号</span><span>${o.id}</span>
+        <span>状态</span><span>回退精修</span>
+        <span>原因</span><span>${reason}</span>
+      `;
+      updateMetrics();
+      renderQueue();
+      renderApproveSelect();
+    }
+
+    function updateMetrics() {
+      const rate = state.onTimeTotal === 0 ? "—" : Math.round((state.onTimeHits / state.onTimeTotal) * 100) + "%";
+      $("mOnTime").textContent = rate;
+      const denom = state.blockedCount + state.scoredHighRisk;
+      // interception rate among high-risk encounters: blocked / (blocked + forced high scored that accepted?)
+      // Use blocked / max(1, blocked + high risk scored) as demo proxy when user blocks
+      const blockRate = denom === 0 ? 0 : Math.round((state.blockedCount / denom) * 100);
+      $("mBlock").textContent = blockRate + "%";
+      $("mDone").textContent = String(state.printed);
+      const capacity = Math.max(1, Number($("capacityInput").value) || 8);
+      const waiting = state.queue.filter((o) => o.status === "queued").length;
+      $("mLoad").textContent = waiting + "/" + capacity;
+    }
+
+    function resetDemo() {
+      state.queue = seedQueue();
+      state.selectedQueueId = null;
+      state.approveId = null;
+      state.printed = 0;
+      state.onTimeHits = 0;
+      state.onTimeTotal = 0;
+      state.blockedCount = 0;
+      state.scoredHighRisk = 0;
+      state.lastScore = null;
+      state.events = [];
+      $("eventLog").innerHTML = "";
+      $("capacityInput").value = 8;
+      $("printLoadInput").value = 72;
+      $("rejectReason").value = "";
+      onIntakeChange();
+      recalcEta();
+      resortQueue();
+      renderApproveSelect();
+      updateMetrics();
+      log("演示数据已重置");
+      $("approveStatus").textContent = "已重置。";
+    }
+
+    // wire
+    document.querySelectorAll(".tab-btn").forEach((b) => {
+      b.addEventListener("click", () => switchTab(b.dataset.tab));
+    });
+    $("intakeSelect").addEventListener("change", onIntakeChange);
+    $("scoreBtn").addEventListener("click", scoreIntake);
+    $("acceptQueueBtn").addEventListener("click", acceptToQueue);
+    $("blockBtn").addEventListener("click", blockIntake);
+    $("recalcEtaBtn").addEventListener("click", () => { recalcEta(); resortQueue(); });
+    $("resortBtn").addEventListener("click", resortQueue);
+    $("capacityInput").addEventListener("change", updateMetrics);
+    $("approveSelect").addEventListener("change", () => {
+      state.approveId = $("approveSelect").value;
+      showApproveDetail();
+    });
+    $("printBtn").addEventListener("click", confirmPrint);
+    $("rejectPrintBtn").addEventListener("click", rejectPrint);
+    $("resetDemoBtn").addEventListener("click", resetDemo);
+
+    renderPains();
+    renderIntakeSelect();
+    recalcEta();
+    resortQueue();
+    renderApproveSelect();
+    updateMetrics();
+    log("工作台就绪：从「难题诊断」看完，再练进单 → 队列 → 开印。");
+  </script>
+</body>
+</html>

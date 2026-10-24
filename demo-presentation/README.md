@@ -6,7 +6,9 @@
 
 | 目录 | 说明 | 线上路径（GitHub Pages） |
 |------|------|--------------------------|
+| [jujubit-fulfillment-ops](./jujubit-fulfillment-ops/) | JuJuBit 柔性履约工作台（质检 / ETA / 开印人审） | `/demo-presentation/jujubit-fulfillment-ops/` |
 | [wechat-ui-demo](./wechat-ui-demo/) | 微信风格 UI，React + Vite | `/demo-presentation/wechat-ui-demo/` |
+| [fundamental-agent-mvp](./fundamental-agent-mvp/) | FUNDAMENTAL Agent MVP 交互演示 | `/demo-presentation/fundamental-agent-mvp/` |
 | weichat-clone | 微信克隆项目演示（Render 在线后端版） | `https://weichat-clone-demo.onrender.com` |
 
 根简历地址：`https://akira-arch-tech.github.io/AirickCheung-resume/`  

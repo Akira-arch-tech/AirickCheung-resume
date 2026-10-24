@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>柔性定制供应链 AI PM | 能力练习 Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1a2421;
+      --muted: #5a6a64;
+      --line: #c8d4ce;
+      --paper: #f3f6f4;
+      --surface: #ffffff;
+      --accent: #0f6b5c;
+      --accent-soft: #d7efe9;
+      --warn: #9a5b12;
+      --warn-soft: #f5e6d0;
+      --danger: #8b2e2e;
+      --danger-soft: #f3d9d9;
+      --ok: #1f6b3a;
+      --ok-soft: #d9eddf;
+      --shadow: 0 1px 0 rgba(26, 36, 33, 0.04);
+      --radius: 12px;
+      --font: "IBM Plex Sans", "PingFang SC", "Noto Sans SC", sans-serif;
+      --display: "Fraunces", "Songti SC", serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #e7f3ef 0%, transparent 55%),
+        radial-gradient(900px 400px at 100% 0%, #ebe8df 0%, transparent 50%),
+        var(--paper);
+      line-height: 1.55;
+    }
+    a { color: var(--accent); }
+    .wrap {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3.5rem;
+    }
+    .back { margin-bottom: 1rem; font-size: 0.92rem; }
+    .back a { text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+
+    .hero {
+      display: grid;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 3vw, 2.15rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0;
+    }
+    .lede {
+      margin: 0;
+      max-width: 46rem;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .metric-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.65rem;
+      margin: 1.1rem 0 1.35rem;
+    }
+    .metric {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.85rem 0.95rem;
+      box-shadow: var(--shadow);
+    }
+    .metric .label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .metric .value {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+    .metric .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.9rem;
+    }
+    .tab-btn, button, .chip {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 0.45rem 0.9rem;
+    }
+    .tab-btn.active, button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    button.ghost {
+      background: transparent;
+    }
+    button.warn {
+      background: var(--warn-soft);
+      border-color: #e0c08a;
+      color: var(--warn);
+    }
+    button.danger {
+      background: var(--danger-soft);
+      border-color: #e0b0b0;
+      color: var(--danger);
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      margin-bottom: 0.85rem;
+      box-shadow: var(--shadow);
+    }
+    .card h2, .card h3 {
+      font-family: var(--display);
+      margin: 0 0 0.55rem;
+      font-weight: 700;
+    }
+    .card h2 { font-size: 1.2rem; }
+    .card h3 { font-size: 1.05rem; }
+    .sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 0 0 0.85rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .case-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.85rem;
+      cursor: pointer;
+      background: #fafbfa;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .case-card:hover, .case-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .case-card .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .case-card strong { display: block; margin-bottom: 0.25rem; }
+    .case-card p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .script-box {
+      background: #f7faf8;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      white-space: pre-wrap;
+      font-size: 0.94rem;
+    }
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0;
+    }
+    .checklist li {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      padding: 0.45rem 0;
+      border-top: 1px solid var(--line);
+      font-size: 0.92rem;
+    }
+    .checklist li:first-child { border-top: 0; }
+    .checklist input { margin-top: 0.25rem; }
+
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.6rem 0 0.2rem;
+    }
+    .step-pill {
+      font-size: 0.78rem;
+      padding: 0.28rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+    .step-pill.hot {
+      background: var(--warn-soft);
+      border-color: #e0c08a;
+      color: var(--warn);
+      font-weight: 600;
+    }
+    .step-pill.ai {
+      background: var(--accent-soft);
+      border-color: #9ecfc3;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0.75rem 0;
+    }
+    .flow .node {
+      padding: 0.4rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      font-size: 0.85rem;
+      background: #fff;
+    }
+    .flow .node.done { background: var(--accent-soft); border-color: #9ecfc3; }
+    .flow .node.current {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    .flow .arrow { color: var(--muted); font-size: 0.85rem; }
+
+    label.field {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      font: inherit;
+      padding: 0.55rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.75rem;
+    }
+
+    .ai-box {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 0 10px 10px 0;
+      padding: 0.85rem 1rem;
+      margin: 0.6rem 0;
+    }
+    .human-box {
+      border-left: 3px solid var(--warn);
+      background: var(--warn-soft);
+      border-radius: 0 10px 10px 0;
+      padding: 0.85rem 1rem;
+      margin: 0.6rem 0;
+    }
+    .fail-box {
+      border-left: 3px solid var(--danger);
+      background: var(--danger-soft);
+      border-radius: 0 10px 10px 0;
+      padding: 0.85rem 1rem;
+      margin: 0.6rem 0;
+    }
+    .kv {
+      display: grid;
+      grid-template-columns: 7.5rem 1fr;
+      gap: 0.35rem 0.6rem;
+      font-size: 0.92rem;
+    }
+    .kv span:nth-child(odd) { color: var(--muted); }
+
+    .status {
+      margin-top: 0.7rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fafbfa;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+    .log {
+      max-height: 220px;
+      overflow: auto;
+      font-size: 0.84rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+      background: #f7faf8;
+    }
+    .log div { padding: 0.2rem 0; border-bottom: 1px solid #e5ece8; }
+    .log div:last-child { border-bottom: 0; }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .table th, .table td {
+      text-align: left;
+      padding: 0.5rem 0.45rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .table th { color: var(--muted); font-weight: 600; font-size: 0.78rem; }
+
+    .pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+    .pill.ok { background: #dff0e5; color: var(--ok); border-color: #b5d8c1; }
+    .pill.warn { background: var(--warn-soft); color: var(--warn); border-color: #e0c08a; }
+    .pill.danger { background: var(--danger-soft); color: var(--danger); border-color: #e0b0b0; }
+
+    .footer-note {
+      margin-top: 1.25rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 820px) {
+      .metric-bar, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .kv { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="back"><a href="../">← 返回作品演示列表</a></p>
+
+    <header class="hero">
+      <div class="eyebrow">跨境电商 · 柔性定制供应链 · AI 产品经理</div>
+      <h1>能力与专业性：可点练 Demo</h1>
+      <p class="lede">
+        用真实询价 / 打样 / 交期案例练「谁付钱—主流程—痛点」口述；
+        在「相似历史单报价」上做人在环设计；再跑通一条最小主流程，并盯住一个验证指标。
+      </p>
+    </header>
+
+    <div class="metric-bar" id="metricBar" aria-live="polite">
+      <div class="metric">
+        <div class="label">验证指标：询价首次响应</div>
+        <div class="value" id="mResponse">—</div>
+        <div class="hint">目标：AI 辅助 &lt; 人工基线 45 分钟</div>
+      </div>
+      <div class="metric">
+        <div class="label">人工采纳率</div>
+        <div class="value" id="mAdopt">0%</div>
+        <div class="hint">采纳 /（采纳+修改+驳回）</div>
+      </div>
+      <div class="metric">
+        <div class="label">本轮练习单数</div>
+        <div class="value" id="mCount">0</div>
+        <div class="hint">完成「确认发出」计 1 单</div>
+      </div>
+      <div class="metric">
+        <div class="label">口述自检完成</div>
+        <div class="value" id="mOral">0/3</div>
+        <div class="hint">三个案例勾选「能口述」</div>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="scene" type="button">1) 场景口述练习</button>
+      <button class="tab-btn" data-tab="ai" type="button">2) AI 人在环边界</button>
+      <button class="tab-btn" data-tab="flow" type="button">3) 最小主流程 Demo</button>
+    </div>
+
+    <!-- ========== TAB 1: SCENE ========== -->
+    <section id="panel-scene" class="panel active" role="tabpanel">
+      <div class="card">
+        <h2>先选一个真实感案例</h2>
+        <p class="sub">口述时固定三句：谁付钱、主流程 5–7 步、钱卡在哪。点案例后看参考稿，再对自己勾选。</p>
+        <div class="grid-3" id="casePicker"></div>
+      </div>
+
+      <div class="card" id="sceneDetail">
+        <h3 id="sceneTitle">请选择上方案例</h3>
+        <p class="sub" id="sceneBrief"></p>
+        <div class="steps" id="sceneSteps"></div>
+        <div class="grid-2" style="margin-top:0.9rem">
+          <div>
+            <h3>参考口述稿（可对照练）</h3>
+            <div class="script-box" id="sceneScript">选择案例后显示。</div>
+          </div>
+          <div>
+            <h3>自检清单</h3>
+            <ul class="checklist" id="sceneCheck">
+              <li><input type="checkbox" disabled /> 先选案例</li>
+            </ul>
+            <div class="btn-row">
+              <button type="button" class="primary" id="markOralBtn" disabled>标记：我能口述这个案例</button>
+              <button type="button" class="ghost" id="revealPainBtn" disabled>只看「最痛一步」</button>
+            </div>
+            <div class="status" id="sceneStatus">等待选择案例…</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TAB 2: AI BOUNDARY ========== -->
+    <section id="panel-ai" class="panel" role="tabpanel">
+      <div class="card">
+        <h2>高杠杆一步：相似历史单报价</h2>
+        <p class="sub">
+          AI 只做「从历史单里找相似工艺 + 给出建议价与交期风险」；
+          关键报价与对客承诺必须人签字。错了：驳回并回退人工询价，不让系统自动发出。
+        </p>
+        <div class="grid-2">
+          <div>
+            <label class="field">当前询价摘要</label>
+            <textarea id="aiBrief" readonly></textarea>
+            <div class="ai-box">
+              <strong>AI 建议（模拟）</strong>
+              <div class="kv" id="aiSuggestKv" style="margin-top:0.5rem"></div>
+            </div>
+            <div class="fail-box">
+              <strong>若 AI 错了会怎样</strong>
+              <p class="sub" style="margin:0.35rem 0 0" id="aiFailText"></p>
+            </div>
+          </div>
+          <div>
+            <div class="human-box">
+              <strong>人留在哪</strong>
+              <p class="sub" style="margin:0.35rem 0 0">
+                跟单 / 报价员核对：材质是否真相似、MOQ、丝印位数、交期是否可承诺。
+                AI 输出 = 建议；人点「确认」后才是对客承诺。
+              </p>
+            </div>
+            <label class="field">人工修改单价（USD，可选）</label>
+            <input id="humanPrice" type="number" min="0" step="0.01" placeholder="留空=直接采纳 AI 价" />
+            <label class="field" style="margin-top:0.55rem">驳回原因（驳回时必填）</label>
+            <input id="rejectReason" placeholder="例如：历史单无烫金，本单无烫金，价偏高" />
+            <div class="btn-row">
+              <button type="button" class="primary" id="adoptBtn">采纳 AI 建议</button>
+              <button type="button" class="warn" id="editAdoptBtn">修改后采纳</button>
+              <button type="button" class="danger" id="rejectBtn">驳回并回退人工</button>
+            </div>
+            <div class="status" id="aiStatus">等待人审决策…</div>
+            <h3 style="margin-top:1rem">决策日志</h3>
+            <div class="log" id="aiLog"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>边界表（产品经理要能当面讲清）</h3>
+        <table class="table">
+          <thead>
+            <tr><th>问题</th><th>本 Demo 的答案</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI 能不能稳？</td><td>依赖历史单图/工艺字段；相似度过低时强制人审，不自动发价。</td></tr>
+            <tr><td>错了会怎样？</td><td>报价错→亏本或丢单；工艺误判→打样报废；交期误判→违约索赔。</td></tr>
+            <tr><td>人留在哪？</td><td>采纳 / 改价采纳 / 驳回回退；对外邮件或报价单需人确认。</td></tr>
+            <tr><td>怎么验收？</td><td>主指标=询价首次响应时长；辅指标=人工采纳率、改价幅度、驳回原因分布。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== TAB 3: FLOW DEMO ========== -->
+    <section id="panel-flow" class="panel" role="tabpanel">
+      <div class="card">
+        <h2>最小主流程（可点通）</h2>
+        <p class="sub">
+          付费方默认：独立站卖家（按席位试点，先证明「询价响应从 45 分钟降到 10 分钟内」再谈扩品类）。
+          复利：每确认一单，历史报价库多一条可检索样本。
+        </p>
+        <div class="flow" id="flowNodes"></div>
+        <div class="grid-2">
+          <div>
+            <label class="field">本单案例</label>
+            <select id="flowCaseSelect"></select>
+            <label class="field" style="margin-top:0.55rem">需求备注（可改）</label>
+            <textarea id="flowNote"></textarea>
+            <div class="btn-row">
+              <button type="button" id="flowResetBtn">重置本单</button>
+              <button type="button" class="primary" id="flowNextBtn">下一步</button>
+            </div>
+            <div class="status" id="flowStatus">从「需求」开始。</div>
+          </div>
+          <div>
+            <h3>当前屏：谁负责什么 / 数据怎么流</h3>
+            <div class="script-box" id="flowExplain"></div>
+            <h3 style="margin-top:0.9rem">本单结果</h3>
+            <div class="kv" id="flowResultKv">
+              <span>状态</span><span>未完成</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>试点验证设计（写进 PRD 的那一段）</h3>
+        <div class="grid-3">
+          <div class="case-card" style="cursor:default">
+            <div class="tag">付费方</div>
+            <strong>独立站卖家运营 / 供应链专员</strong>
+            <p>买的是「更快给出可承诺报价」，不是「全自动接单」。</p>
+          </div>
+          <div class="case-card" style="cursor:default">
+            <div class="tag">主指标</div>
+            <strong>询价首次响应时长</strong>
+            <p>基线 45 分钟 → 试点目标 ≤ 10 分钟（含人审）。</p>
+          </div>
+          <div class="case-card" style="cursor:default">
+            <div class="tag">复利飞轮</div>
+            <strong>确认单进报价库</strong>
+            <p>下一单相似检索更准 → 采纳率升 → 响应更快。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      定位提醒：你不是训练模型的人，而是能讲清「谁付钱、主流程、AI 只碰哪一步、错了如何回退、用什么指标证明值不值」的产品经理。
+      本地打开本页即可练习；部署后路径为 <code>/demo-presentation/flexible-supply-chain-ai-pm/</code>。
+    </p>
+  </div>
+
+  <script>
+    const CASES = [
+      {
+        id: "quote",
+        tag: "询价",
+        title: "硅胶马克杯印 Logo · 独立站小单",
+        oneLiner: "美区独立站卖家要 200 个硅胶杯丝印单色 Logo，问单价与交期。",
+        payer: "独立站卖家（付费试点客户）",
+        pain: "询价慢：跟单要翻微信/表格找历史单，首次回复常要 30–60 分钟，黄牛期丢单。",
+        hotStep: "报价",
+        steps: ["需求(图/规格)", "报价", "工艺确认", "排产", "质检", "出货", "售后"],
+        script:
+`谁付钱：独立站卖家。他现在靠运营把图和数量甩到微信群，等工厂跟单人工估。
+主流程：需求 → 报价 → 工艺确认 → 排产 → 质检 → 出货 → 售后。
+最痛：报价。图对不上历史工艺、MOQ 和丝印位数说不清，回复一慢，卖家就去问下一家。
+AI 该碰：相似历史单检索 + 建议价/交期风险；不要一上来全自动发价。`,
+        brief: "硅胶马克杯，单色丝印 Logo，数量 200，发美西 FBA，要 14 天内可出货的报价。",
+        ai: {
+          similar: "H-2024-118（硅胶杯·单色丝印·300pcs）",
+          score: "82%",
+          unit: 3.85,
+          lead: "12–15 工作日（产能偏紧）",
+          risk: "中：本单数量低于历史单，单位成本可能上浮 8–12%",
+          fail: "若把双色丝印历史单误判为单色，报价偏低 → 工厂接单后亏损或临时加价撕单。"
+        }
+      },
+      {
+        id: "sample",
+        tag: "打样",
+        title: "刺绣帽打样 · 工艺扯皮",
+        oneLiner: "品牌要 3 顶刺绣帽打样，针数与线色来回改了两轮仍不过。",
+        payer: "品牌方（打样费可收，但转化靠过样）",
+        pain: "打样贵且慢：口头改工艺没有结构化字段，工厂做错针法，样品报废、档期被占。",
+        hotStep: "工艺确认",
+        steps: ["需求(图/规格)", "报价", "工艺确认", "打样", "过样", "大货排产", "质检"],
+        script:
+`谁付钱：品牌方付打样费；真正要的是「可过样的工艺确认」，否则大货不敢下。
+主流程：需求 → 报价 → 工艺确认 → 打样 → 过样 → 大货排产 → 质检。
+最痛：工艺确认。图上好看不等于针法可做；线色、针数、帽型公差没写成字段就会扯皮。
+AI 该碰：从图/历史工艺卡提取建议参数给人审；终审必须工艺员签字。`,
+        brief: "棒球帽正面刺绣 Logo，约 8cm，需打样 3 顶，线色按 Pantone，两周内过样。",
+        ai: {
+          similar: "H-2023-087（刺绣帽·8cm·平绣）",
+          score: "74%",
+          unit: 18.0,
+          lead: "打样 7–9 工作日",
+          risk: "高：针数未结构化，相似分偏低，建议人工补工艺卡后再估大货价",
+          fail: "若 AI 按平绣估价、实际要 3D 绣，打样报废 + 档期浪费，品牌信任受损。"
+        }
+      },
+      {
+        id: "leadtime",
+        tag: "交期",
+        title: "圣诞档定制袜 · 交期飘了",
+        oneLiner: "贸易商承诺黑五前到仓，排产时发现印花机档期已满。",
+        payer: "贸易商（对上承诺卖家，对下压工厂）",
+        pain: "交期飘：对外承诺拍脑袋，产能日历未进系统，质检与船期一挤就违约。",
+        hotStep: "排产",
+        steps: ["需求", "报价", "工艺确认", "排产", "质检", "订舱/出货", "售后索赔"],
+        script:
+`谁付钱：贸易商先扛对客承诺；最终成本可能转嫁工厂或自己吃索赔。
+主流程：需求 → 报价 → 工艺确认 → 排产 → 质检 → 订舱出货 → 售后索赔。
+最痛：排产。报价时没锁产能，船期和质检缓冲没留，圣诞档更容易爆。
+AI 该碰：交期风险预警（产能占用 + 历史延误）；承诺交期必须人确认。`,
+        brief: "定制中筒袜印花，800 双，需黑五前到美东仓，已口头承诺 10 月 20 日出货。",
+        ai: {
+          similar: "H-2024-221（印花袜·1000 双·旺季）",
+          score: "79%",
+          unit: 2.1,
+          lead: "建议承诺不早于 10 月 28 日（印花机负荷 92%）",
+          risk: "高：与已承诺 10/20 冲突，系统应拦截自动承诺",
+          fail: "若 AI 按淡季交期输出，贸易商对客锁死日期 → 延误索赔与平台绩效双杀。"
+        }
+      }
+    ];
+
+    const FLOW_STEPS = [
+      { id: "demand", label: "需求" },
+      { id: "aiQuote", label: "AI 建议价" },
+      { id: "human", label: "人审" },
+      { id: "confirm", label: "确认发出" },
+      { id: "metric", label: "记指标" }
+    ];
+
+    const state = {
+      tab: "scene",
+      selectedCaseId: null,
+      oralDone: {},
+      aiDecision: null,
+      decisions: { adopt: 0, edit: 0, reject: 0 },
+      flowStep: 0,
+      flowCaseId: "quote",
+      flowLockedDecision: null,
+      completedOrders: 0,
+      lastResponseMin: null,
+      responseSamples: []
+    };
+
+    function $(id) { return document.getElementById(id); }
+    function caseById(id) { return CASES.find((c) => c.id === id); }
+
+    function switchTab(tab) {
+      state.tab = tab;
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === tab);
+      });
+      document.querySelectorAll(".panel").forEach((p) => {
+        p.classList.toggle("active", p.id === "panel-" + tab);
+      });
+    }
+
+    function renderCasePicker() {
+      const root = $("casePicker");
+      root.innerHTML = CASES.map((c) => `
+        <div class="case-card ${state.selectedCaseId === c.id ? "selected" : ""}" data-id="${c.id}">
+          <div class="tag">${c.tag}${state.oralDone[c.id] ? " · 已口述" : ""}</div>
+          <strong>${c.title}</strong>
+          <p>${c.oneLiner}</p>
+        </div>
+      `).join("");
+      root.querySelectorAll(".case-card").forEach((el) => {
+        el.addEventListener("click", () => selectCase(el.dataset.id));
+      });
+    }
+
+    function selectCase(id) {
+      state.selectedCaseId = id;
+      const c = caseById(id);
+      renderCasePicker();
+      $("sceneTitle").textContent = c.title;
+      $("sceneBrief").textContent = `付费方：${c.payer}　｜　钱卡在：${c.pain}`;
+      $("sceneSteps").innerHTML = c.steps.map((s) => {
+        const cls = s.includes(c.hotStep) || s === c.hotStep ? "hot" : "";
+        const ai = s === "报价" || s === "工艺确认" || s === "排产" ? " ai" : "";
+        return `<span class="step-pill ${cls}${ai}">${s}</span>`;
+      }).join("");
+      $("sceneScript").textContent = c.script;
+      $("sceneCheck").innerHTML = `
+        <li><input type="checkbox" class="oral-check" data-k="payer" /> 能说清谁付钱、他现在怎么手工做</li>
+        <li><input type="checkbox" class="oral-check" data-k="flow" /> 能按顺序讲主流程，并指出最痛一步（${c.hotStep}）</li>
+        <li><input type="checkbox" class="oral-check" data-k="ai" /> 能说 AI 只碰哪一步、错了如何回退给人</li>
+      `;
+      $("markOralBtn").disabled = false;
+      $("revealPainBtn").disabled = false;
+      $("sceneStatus").textContent = "对照参考稿口述一遍，然后勾自检。";
+      // sync AI tab defaults
+      $("aiBrief").value = c.brief;
+      renderAiSuggest(c);
+      state.aiDecision = null;
+      $("aiStatus").textContent = "已载入案例「" + c.tag + "」。请做人审决策。";
+      $("humanPrice").value = "";
+      $("rejectReason").value = "";
+    }
+
+    function renderAiSuggest(c) {
+      const a = c.ai;
+      $("aiSuggestKv").innerHTML = `
+        <span>相似历史单</span><span>${a.similar}</span>
+        <span>相似度</span><span>${a.score}</span>
+        <span>建议单价</span><span>USD ${a.unit.toFixed(2)}</span>
+        <span>建议交期</span><span>${a.lead}</span>
+        <span>风险</span><span>${a.risk}</span>
+      `;
+      $("aiFailText").textContent = a.fail;
+    }
+
+    function ensureCase() {
+      if (!state.selectedCaseId) {
+        selectCase("quote");
+      }
+      return caseById(state.selectedCaseId);
+    }
+
+    function appendAiLog(text) {
+      const el = document.createElement("div");
+      const ts = new Date().toLocaleTimeString();
+      el.textContent = `[${ts}] ${text}`;
+      $("aiLog").prepend(el);
+    }
+
+    function recordDecision(type, detail) {
+      state.decisions[type] += 1;
+      state.aiDecision = { type, detail, at: Date.now() };
+      updateMetrics();
+      appendAiLog(detail);
+    }
+
+    function updateMetrics() {
+      const { adopt, edit, reject } = state.decisions;
+      const total = adopt + edit + reject;
+      const adoptRate = total === 0 ? 0 : Math.round((adopt / total) * 100);
+      $("mAdopt").textContent = total === 0 ? "0%" : adoptRate + "%";
+      $("mCount").textContent = String(state.completedOrders);
+      const oralCount = Object.keys(state.oralDone).filter((k) => state.oralDone[k]).length;
+      $("mOral").textContent = oralCount + "/3";
+      if (state.lastResponseMin != null) {
+        $("mResponse").textContent = state.lastResponseMin + " 分";
+      } else if (state.responseSamples.length) {
+        const avg = state.responseSamples.reduce((a, b) => a + b, 0) / state.responseSamples.length;
+        $("mResponse").textContent = avg.toFixed(1) + " 分";
+      } else {
+        $("mResponse").textContent = "—";
+      }
+    }
+
+    function simulateResponseMinutes(decisionType) {
+      // mock: baseline 45; adopt ~6; edit ~12; reject falls back ~40
+      if (decisionType === "adopt") return 6 + Math.random() * 2;
+      if (decisionType === "edit") return 10 + Math.random() * 4;
+      return 38 + Math.random() * 6;
+    }
+
+    // ---- Flow demo ----
+    function renderFlowSelect() {
+      $("flowCaseSelect").innerHTML = CASES.map((c) =>
+        `<option value="${c.id}">${c.tag} · ${c.title}</option>`
+      ).join("");
+      $("flowCaseSelect").value = state.flowCaseId;
+      const c = caseById(state.flowCaseId);
+      $("flowNote").value = c.brief;
+    }
+
+    function renderFlowNodes() {
+      $("flowNodes").innerHTML = FLOW_STEPS.map((s, i) => {
+        const cls = i < state.flowStep ? "done" : i === state.flowStep ? "current" : "";
+        const arrow = i < FLOW_STEPS.length - 1 ? '<span class="arrow">→</span>' : "";
+        return `<span class="node ${cls}">${i + 1}. ${s.label}</span>${arrow}`;
+      }).join("");
+    }
+
+    function flowExplain() {
+      const c = caseById(state.flowCaseId);
+      const step = FLOW_STEPS[state.flowStep];
+      const map = {
+        demand: `谁负责：卖家运营贴图+数量；系统只收结构化需求。\n数据：图/规格/数量/目的仓进入询价单。\n本单：${c.oneLiner}`,
+        aiQuote: `谁负责：AI Agent 检索历史单并输出建议价与交期风险。\n数据：相似单 ID、相似度、建议单价、风险等级。\n注意：此时还不是对客承诺。`,
+        human: `谁负责：跟单/报价员。可选：采纳 / 改价采纳 / 驳回回退。\n数据：人审结论写入询价单；驳回则关闭 AI 建议、转人工工单。\n责任：只有人确认后的价格才能对外。`,
+        confirm: `谁负责：报价员点「确认发出」→ 生成对客报价摘要。\n数据：最终单价、交期承诺、操作人、时间戳。\n失败回退：若发现误发，作废报价单并重新人审（本 Demo 用重置模拟）。`,
+        metric: `验证指标：询价首次响应时长（本单已写入顶部指标）。\n辅指标：人工采纳率。\n复利：本单确认后进入历史库，下一单相似检索可用。`
+      };
+      $("flowExplain").textContent = map[step.id];
+    }
+
+    function setFlowResult(lines) {
+      $("flowResultKv").innerHTML = lines.map(([k, v]) => `<span>${k}</span><span>${v}</span>`).join("");
+    }
+
+    function resetFlow(keepCase) {
+      state.flowStep = 0;
+      state.flowLockedDecision = null;
+      if (!keepCase) {
+        state.flowCaseId = state.selectedCaseId || "quote";
+      }
+      renderFlowSelect();
+      renderFlowNodes();
+      flowExplain();
+      $("flowStatus").textContent = "从「需求」开始。点「下一步」推进。";
+      setFlowResult([["状态", "未完成"], ["案例", caseById(state.flowCaseId).tag]]);
+      $("flowNextBtn").disabled = false;
+      $("flowNextBtn").textContent = "下一步";
+    }
+
+    function advanceFlow() {
+      const c = caseById(state.flowCaseId);
+      const step = FLOW_STEPS[state.flowStep];
+
+      if (step.id === "demand") {
+        $("flowStatus").textContent = "需求已入库。下一步让 AI 出相似历史单建议价。";
+        state.flowStep = 1;
+      } else if (step.id === "aiQuote") {
+        $("flowStatus").textContent = `AI 已给出建议价 USD ${c.ai.unit.toFixed(2)}（相似度 ${c.ai.score}）。进入人审。`;
+        state.flowStep = 2;
+      } else if (step.id === "human") {
+        // 仅自动沿用「采纳/改价」；驳回需在流程里再次确认，避免练习完驳回后误入回退分支
+        if (!state.flowLockedDecision) {
+          const reusable =
+            state.aiDecision &&
+            state.selectedCaseId === state.flowCaseId &&
+            (state.aiDecision.type === "adopt" || state.aiDecision.type === "edit");
+          if (reusable) {
+            state.flowLockedDecision = state.aiDecision;
+          } else {
+            $("flowStatus").textContent = "本案还没有「采纳/改价」结论。可去「2) AI 人在环」操作，或点下方快捷采纳以跑通主指标；驳回回退请在人在环页完整练习。";
+            $("flowNextBtn").textContent = "快捷：采纳并继续";
+            state._pendingQuickAdopt = true;
+            flowExplain();
+            renderFlowNodes();
+            return;
+          }
+        }
+        if (state.flowLockedDecision.type === "reject") {
+          $("flowStatus").textContent = "已驳回：回退人工询价工单。本单不进入「确认发出」，记一次人工基线响应。";
+          const mins = simulateResponseMinutes("reject");
+          state.lastResponseMin = Math.round(mins * 10) / 10;
+          state.responseSamples.push(state.lastResponseMin);
+          setFlowResult([
+            ["状态", "已回退人工"],
+            ["原因", state.flowLockedDecision.detail],
+            ["响应时长", state.lastResponseMin + " 分钟"],
+            ["指标", "未达 AI 辅助目标（预期，因驳回）"]
+          ]);
+          state.flowStep = 4; // skip confirm, jump to metric conceptually
+          updateMetrics();
+          renderFlowNodes();
+          flowExplain();
+          $("flowNextBtn").textContent = "完成并重置";
+          state._finishOnly = true;
+          return;
+        }
+        $("flowStatus").textContent = "人审通过。可以确认发出对客报价。";
+        state.flowStep = 3;
+      } else if (step.id === "confirm") {
+        if (state._pendingQuickAdopt) {
+          state._pendingQuickAdopt = false;
+          recordDecision("adopt", `流程快捷采纳：USD ${c.ai.unit.toFixed(2)}`);
+          state.flowLockedDecision = state.aiDecision;
+        }
+        const price = state.flowLockedDecision && state.flowLockedDecision.price != null
+          ? state.flowLockedDecision.price
+          : c.ai.unit;
+        const mins = simulateResponseMinutes(state.flowLockedDecision.type);
+        state.lastResponseMin = Math.round(mins * 10) / 10;
+        state.responseSamples.push(state.lastResponseMin);
+        state.completedOrders += 1;
+        $("flowStatus").textContent = `报价已确认发出：USD ${Number(price).toFixed(2)}。写入验证指标。`;
+        setFlowResult([
+          ["状态", "已确认发出"],
+          ["最终单价", "USD " + Number(price).toFixed(2)],
+          ["人审", state.flowLockedDecision.type],
+          ["响应时长", state.lastResponseMin + " 分钟"],
+          ["对比基线", "人工约 45 分钟 → " + (state.lastResponseMin < 45 ? "达标" : "未达标")]
+        ]);
+        state.flowStep = 4;
+        updateMetrics();
+      } else if (step.id === "metric") {
+        if (state._finishOnly) {
+          state._finishOnly = false;
+          resetFlow(true);
+          return;
+        }
+        $("flowStatus").textContent = "指标已记录。可换案例再跑一单，观察采纳率与响应时长变化。";
+        $("flowNextBtn").textContent = "再跑一单";
+        state._finishOnly = true;
+        updateMetrics();
+        renderFlowNodes();
+        flowExplain();
+        return;
+      }
+
+      if (state._pendingQuickAdopt && FLOW_STEPS[state.flowStep].id === "human") {
+        // handled above
+      }
+
+      renderFlowNodes();
+      flowExplain();
+      updateMetrics();
+    }
+
+    // ---- wire events ----
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        switchTab(btn.dataset.tab);
+        if (btn.dataset.tab === "ai") ensureCase();
+        if (btn.dataset.tab === "flow") {
+          if (state.selectedCaseId) state.flowCaseId = state.selectedCaseId;
+          resetFlow(true);
+        }
+      });
+    });
+
+    $("markOralBtn").addEventListener("click", () => {
+      const c = ensureCase();
+      const checks = [...document.querySelectorAll(".oral-check")];
+      const ok = checks.every((x) => x.checked);
+      if (!ok) {
+        $("sceneStatus").textContent = "请先勾满三条自检，再标记「能口述」。这是在练产品经理当面讲清，不是点完成。";
+        return;
+      }
+      state.oralDone[c.id] = true;
+      renderCasePicker();
+      updateMetrics();
+      $("sceneStatus").textContent = `已记录：你能口述「${c.tag}」案例。建议再练另外两个。`;
+    });
+
+    $("revealPainBtn").addEventListener("click", () => {
+      const c = ensureCase();
+      $("sceneStatus").textContent = `最痛一步：【${c.hotStep}】—— ${c.pain}`;
+    });
+
+    $("adoptBtn").addEventListener("click", () => {
+      const c = ensureCase();
+      recordDecision("adopt", `采纳 AI 建议价 USD ${c.ai.unit.toFixed(2)}（${c.tag}）`);
+      state.aiDecision.price = c.ai.unit;
+      $("aiStatus").textContent = "已采纳。AI=建议，你=承诺责任人。可去「最小主流程」把本单走完。";
+    });
+
+    $("editAdoptBtn").addEventListener("click", () => {
+      const c = ensureCase();
+      const v = parseFloat($("humanPrice").value);
+      if (!Number.isFinite(v) || v <= 0) {
+        $("aiStatus").textContent = "修改后采纳：请填写有效的人工单价。";
+        return;
+      }
+      recordDecision("edit", `改价采纳：AI ${c.ai.unit.toFixed(2)} → 人工 ${v.toFixed(2)}（${c.tag}）`);
+      state.aiDecision.price = v;
+      $("aiStatus").textContent = `已改价采纳为 USD ${v.toFixed(2)}。对外以人工价为准。`;
+    });
+
+    $("rejectBtn").addEventListener("click", () => {
+      const c = ensureCase();
+      const reason = $("rejectReason").value.trim();
+      if (!reason) {
+        $("aiStatus").textContent = "驳回必须写原因——这是复利数据，也是责任边界。";
+        return;
+      }
+      recordDecision("reject", `驳回回退人工：${reason}（${c.tag}）`);
+      $("aiStatus").textContent = "已驳回。系统不得自动发价；转人工询价工单。";
+    });
+
+    $("flowCaseSelect").addEventListener("change", (e) => {
+      state.flowCaseId = e.target.value;
+      state.selectedCaseId = state.flowCaseId;
+      selectCase(state.flowCaseId);
+      resetFlow(true);
+    });
+
+    $("flowResetBtn").addEventListener("click", () => resetFlow(true));
+    $("flowNextBtn").addEventListener("click", () => {
+      if (state._finishOnly && FLOW_STEPS[state.flowStep].id === "metric") {
+        state._finishOnly = false;
+        // start new order same case
+        state.flowStep = 0;
+        state.flowLockedDecision = null;
+        state.aiDecision = null;
+        state._pendingQuickAdopt = false;
+        renderFlowNodes();
+        flowExplain();
+        $("flowStatus").textContent = "新单一轮：从需求开始。";
+        $("flowNextBtn").textContent = "下一步";
+        setFlowResult([["状态", "未完成"], ["案例", caseById(state.flowCaseId).tag]]);
+        return;
+      }
+      if (state._pendingQuickAdopt) {
+        const c = caseById(state.flowCaseId);
+        recordDecision("adopt", `流程快捷采纳：USD ${c.ai.unit.toFixed(2)}`);
+        state.aiDecision.price = c.ai.unit;
+        state.flowLockedDecision = state.aiDecision;
+        state._pendingQuickAdopt = false;
+        $("flowNextBtn").textContent = "下一步";
+        $("flowStatus").textContent = "人审通过（快捷采纳）。可以确认发出对客报价。";
+        state.flowStep = 3;
+        renderFlowNodes();
+        flowExplain();
+        return;
+      }
+      advanceFlow();
+    });
+
+    // init
+    renderCasePicker();
+    selectCase("quote");
+    renderFlowSelect();
+    resetFlow(true);
+    updateMetrics();
+  </script>
+</body>
+</html>

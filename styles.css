@@ -345,6 +345,85 @@ body {
     white-space: nowrap;
 }
 
+/* Projects */
+.projects-intro {
+    margin: 0 0 28px;
+    color: var(--ink-muted);
+    font-size: 0.98rem;
+    line-height: 1.6;
+}
+
+.projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.project-card {
+    padding: 24px 26px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.section-alt .project-card {
+    background: #fff;
+}
+
+.project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    margin-bottom: 10px;
+}
+
+.project-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+}
+
+.project-period {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.project-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.project-role {
+    margin: 0 0 14px;
+    color: var(--ink-muted);
+    font-size: 0.92rem;
+}
+
+.project-bullets {
+    margin: 0;
+    padding-left: 1.15em;
+}
+
+.project-bullets li {
+    margin-bottom: 8px;
+    color: var(--ink);
+    line-height: 1.55;
+}
+
+.project-bullets li:last-child {
+    margin-bottom: 0;
+}
+
 /* Education */
 .education-item {
     display: grid;

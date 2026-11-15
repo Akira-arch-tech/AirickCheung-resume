@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JuJuBit｜三Agent一页指标卡</title>
+  <style>
+    @page { size: A4; margin: 8mm 9mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "WenQuanYi Micro Hei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      color: #1a1714;
+      font-size: 8pt;
+      line-height: 1.28;
+      background: #fff;
+      padding: 8px 10px 12px;
+      max-width: 210mm;
+      margin: 0 auto;
+    }
+    h1 { font-size: 13pt; margin-bottom: 2px; }
+    .sub { color: #5c5650; font-size: 7.5pt; margin-bottom: 6px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .card {
+      border: 1.5px solid #1a1714;
+      border-radius: 6px;
+      padding: 6px 7px 7px;
+      min-height: 0;
+    }
+    .card h2 {
+      font-size: 9pt;
+      border-bottom: 1px solid #d9d2c5;
+      padding-bottom: 3px;
+      margin-bottom: 4px;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 6.5pt;
+      font-weight: 700;
+      color: #8b6914;
+      margin-bottom: 2px;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 3px 0 4px; }
+    th, td {
+      border-bottom: 1px solid #e8e2d8;
+      padding: 2px 2px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 6.8pt;
+    }
+    th { color: #5c5650; font-weight: 600; }
+    .blank { border-bottom: 1px dotted #999; display: inline-block; min-width: 28px; }
+    ul { margin: 2px 0 0 12px; }
+    li { margin-bottom: 1px; font-size: 6.8pt; }
+    .foot {
+      margin-top: 6px;
+      border: 1px solid #cfc7b8;
+      border-radius: 6px;
+      padding: 5px 7px;
+      font-size: 7.2pt;
+    }
+    .foot strong { color: #8b6914; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 3px; }
+    @media print {
+      body { padding: 0; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <p class="no-print sub"><a href="./">← 演示列表</a> · 打印建议：A4 纵向 · 浏览器「打印」即可</p>
+  <h1>JuJuBit｜三 Agent 一页指标卡</h1>
+  <p class="sub">供应链门禁用 · 未过线不自动放量 · 阈值可用近 30 单校准 · 日期：________ 填写人：________</p>
+
+  <div class="grid">
+    <section class="card">
+      <div class="tag">卡1 · 生成 Agent</div>
+      <h2>图文 → 3D 基础模型</h2>
+      <table>
+        <thead><tr><th>指标</th><th>过线</th><th>本周</th></tr></thead>
+        <tbody>
+          <tr><td>一次可派修模率</td><td>≥70%</td><td><span class="blank"></span></td></tr>
+          <tr><td>致命缺陷率</td><td>≤5%</td><td><span class="blank"></span></td></tr>
+          <tr><td>难例可用率</td><td>≥50%</td><td><span class="blank"></span></td></tr>
+          <tr><td>平均时延</td><td>≤3min</td><td><span class="blank"></span></td></tr>
+          <tr><td>连带修模工时 vs 上周</td><td>升幅≤20%</td><td><span class="blank"></span></td></tr>
+          <tr><td>版权/违规漏拦</td><td>=0</td><td><span class="blank"></span></td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>功能闸：可预览·有主体·无碎裂·风险标签已写，否则不派修模</li>
+        <li>放量：过线且 2 周致命缺陷不反弹；否则回滚 gen_version</li>
+        <li>今日抽检 <span class="blank"></span> 单｜派单 <span class="blank"></span>｜打回 <span class="blank"></span></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <div class="tag">卡2 · 修模辅助 Agent</div>
+      <h2>清单 · 派单 · 缺陷提示</h2>
+      <table>
+        <thead><tr><th>指标</th><th>过线</th><th>本周</th></tr></thead>
+        <tbody>
+          <tr><td>清单漏项检出率</td><td>≥90%</td><td><span class="blank"></span></td></tr>
+          <tr><td>缺陷提示准确率</td><td>≥70%</td><td><span class="blank"></span></td></tr>
+          <tr><td>派单匹配正确率</td><td>≥85%</td><td><span class="blank"></span></td></tr>
+          <tr><td>修模师采纳率</td><td>≥40%观察</td><td><span class="blank"></span></td></tr>
+          <tr><td>平均修模分钟 L1/L2/L3</td><td>持平或降</td><td><span class="blank"></span></td></tr>
+          <tr><td>未确认自动改 mesh</td><td>=0</td><td><span class="blank"></span></td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>禁止静默改模；改 mesh 必须人确认</li>
+        <li>派单：无风险 L1；薄壁/复杂发/配件 L2；≥10cm 或截单≤2天或强制放行 L3</li>
+        <li>今日：清单 <span class="blank"></span>｜派单抽 <span class="blank"></span>｜不同意 <span class="blank"></span></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <div class="tag">卡3 · 质检 Agent</div>
+      <h2>开印门禁</h2>
+      <table>
+        <thead><tr><th>指标</th><th>过线</th><th>本周</th></tr></thead>
+        <tbody>
+          <tr><td>漏检率（最重要）</td><td>≤3%</td><td><span class="blank"></span></td></tr>
+          <tr><td>误检率</td><td>≤15%</td><td><span class="blank"></span></td></tr>
+          <tr><td>与资深一致率</td><td>≥80%</td><td><span class="blank"></span></td></tr>
+          <tr><td>高风险召回</td><td>≥95%</td><td><span class="blank"></span></td></tr>
+          <tr><td>HUMAN 占比</td><td>≤40%</td><td><span class="blank"></span></td></tr>
+          <tr><td>FAIL 有码有位点</td><td>≥95%</td><td><span class="blank"></span></td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>一票否决：破面·严重穿模·无底座站不住·导出坏·尺寸不符</li>
+        <li>漏检≥2 单/周 → Agent 仅建议，全部人审，禁止自动开印</li>
+        <li>今日对照 <span class="blank"></span>｜一致 <span class="blank"></span>｜漏检 <span class="blank"></span>｜误检 <span class="blank"></span></li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="foot">
+    <strong>周五上级只看 4 个数：</strong>
+    <div class="row">
+      <span>① 一次可派修模率 <span class="blank"></span>（≥70%）</span>
+      <span>② 修模分钟 L1/L2/L3 <span class="blank"></span>/<span class="blank"></span>/<span class="blank"></span></span>
+      <span>③ 质检漏检 <span class="blank"></span>/<span class="blank"></span>（≤3%）</span>
+      <span>④ 准时开印率 <span class="blank"></span></span>
+    </div>
+    <div class="row">
+      <span>缺陷码 Top3：<span class="blank"></span> <span class="blank"></span> <span class="blank"></span></span>
+      <span>下周只改 1 条规则：<span class="blank"></span></span>
+    </div>
+  </div>
+</body>
+</html>
